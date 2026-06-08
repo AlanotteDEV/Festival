@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trian Comics & Cosplay 2026 - Canosa di Puglia</title>
+    <!-- Tailwind CSS per il layout responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font di Google adatti allo stile Comics & Retro -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome per le icone pop-culture -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        comics: ['Bangers', 'cursive'],
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        comicRed: '#FF3333',
+                        comicBlue: '#00D2FF',
+                        comicPurple: '#9D00FF',
+                        comicYellow: '#FFD600',
+                        darkBg: '#0B0B14',
+                        cardBg: '#131326',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Effetto stile fumetto con bordi spessi neri (Cel Shading / Pop-art style) */
+        .comic-border {
+            border: 4px solid #000000;
+            box-shadow: 6px 6px 0px #000000;
+        }
+        .comic-border-sm {
+            border: 2px solid #000000;
+            box-shadow: 4px 4px 0px #000000;
+        }
+        .comic-text-stroke {
+            -webkit-text-stroke: 1.5px #000000;
+        }
+        .comic-btn-hover:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #000000;
+        }
+        .comic-btn-hover:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000000;
+        }
+        /* Sfondo con pattern a retino mezzatinta (Halftone dots) tipico dei fumetti */
+        .halftone-bg {
+            background-color: #0b0b14;
+            background-image: radial-gradient(#1c1c3a 15%, transparent 16%), radial-gradient(#1c1c3a 15%, transparent 16%);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        /* Scorrimento morbido delle sezioni */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="halftone-bg text-white font-sans overflow-x-hidden">
+
+    <!-- Header / Navbar Navigazione -->
+    <nav class="fixed top-0 left-0 w-full bg-darkBg/95 border-b-4 border-black z-50 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Logo Testuale in stile locandina -->
+            <a href="#hero" class="font-comics text-3xl md:text-4xl tracking-wider text-comicYellow hover:text-white transition duration-200 flex items-center gap-2">
+                <span class="text-comicRed comic-text-stroke">TRIAN</span> 
+                <span class="bg-comicPurple text-white px-3 py-1 rounded-md comic-border-sm transform -rotate-2">COMICS</span>
+                <span class="text-white text-2xl font-sans font-bold">&amp; COSPLAY</span>
+            </a>
+            
+            <!-- Link Menu -->
+            <div class="flex items-center gap-6 font-semibold uppercase tracking-wider text-sm">
+                <a href="#evento" class="hover:text-comicBlue transition duration-200">L'Evento</a>
+                <a href="#programma" class="hover:text-comicYellow transition duration-200">Programma</a>
+                <a href="#iscriviti" class="hover:text-comicRed transition duration-200">Iscriviti alle Gare</a>
+                <a href="#contatti" class="hover:text-comicBlue transition duration-200">Info & Mappa</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sezione Hero principale -->
+    <header id="hero" class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-20 px-4 text-center">
+        <!-- Overlay colorati retrostanti per dare profondità fantascientifica/anime -->
+        <div class="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full bg-comicBlue/20 blur-[100px] top-1/4 left-10 -z-10 animate-pulse"></div>
+        <div class="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full bg-comicRed/20 blur-[100px] bottom-10 right-10 -z-10 animate-pulse" style="animation-delay: 2s;"></div>
+
+        <!-- Badge Esplosivo stile fumetto "ZAP!" -->
+        <div class="inline-block transform -rotate-6 bg-comicYellow text-black font-comics text-2xl md:text-3xl px-6 py-2 rounded-lg comic-border mb-8 animate-bounce">
+            💥 NUOVA EDIZIONE!
+        </div>
+
+        <!-- Titolo Principale ad alto impatto visivo -->
+        <h1 class="font-comics text-5xl sm:text-7xl md:text-9xl leading-none text-white tracking-wide mb-4">
+            <span class="text-comicRed block comic-text-stroke drop-shadow-[0_5px_0_rgba(0,210,255,1)]">TRIAN COMICS</span>
+            <span class="text-3xl sm:text-5xl md:text-6xl block text-white font-sans font-extrabold my-2">&amp;</span>
+            <span class="text-white block comic-text-stroke drop-shadow-[0_5px_0_rgba(157,0,255,1)]">COSPLAY</span>
+        </h1>
+
+        <!-- Data e Luogo in grande evidenza -->
+        <div class="bg-cardBg comic-border p-6 max-w-xl mx-auto my-8 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+            <p class="text-comicYellow font-comics text-3xl md:text-4xl tracking-wider mb-2">
+                📅 SABATO 18 LUGLIO 2026
+            </p>
+            <p class="text-xl md:text-2xl font-bold text-gray-300 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-location-dot text-comicRed"></i> CANOSA DI PUGLIA (BT)
+            </p>
+        </div>
+
+        <!-- CTA Bottoni -->
+        <div class="flex flex-col sm:flex-row gap-6 mt-4">
+            <a href="#iscriviti" class="bg-comicRed text-white font-comics text-2xl tracking-widest px-8 py-4 rounded-xl comic-border comic-btn-hover transition-all duration-200">
+                🚀 REGISTRATI ORA
+            </a>
+            <a href="#programma" class="bg-comicBlue text-black font-comics text-2xl tracking-widest px-8 py-4 rounded-xl comic-border comic-btn-hover transition-all duration-200">
+                📖 SCOPRI IL PROGRAMMA
+            </a>
+        </div>
+    </header>
+
+    <!-- Sezione Presentazione Evento -->
+    <section id="evento" class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            
+            <!-- Elemento Grafico Rappresentativo (Bolla fumetto per simulare lo stile della locandina) -->
+            <div class="relative bg-comicPurple p-8 md:p-12 rounded-3xl comic-border text-white flex flex-col justify-center items-center text-center">
+                <div class="absolute -top-6 -left-6 bg-comicRed text-white font-comics text-3xl px-6 py-2 rounded-lg comic-border transform -rotate-12">
+                    POW!
+                </div>
+                <h3 class="font-comics text-4xl md:text-5xl text-comicYellow mb-6 comic-text-stroke">LA POP CULTURE ATTERRA A CANOSA!</h3>
+                <p class="text-lg md:text-xl font-medium leading-relaxed max-w-lg">
+                    Preparati a vivere la giornata più nerd dell'anno. Stand commerciali, illustratori di fama nazionale, aree interattive e tutta la magia dei fumetti e dei videogiochi racchiusa in una cornice storica favolosa.
+                </p>
+                <div class="mt-8 flex gap-4 text-4xl">
+                    <i class="fa-solid fa-gamepad text-comicYellow animate-pulse"></i>
+                    <i class="fa-solid fa-mask text-white"></i>
+                    <i class="fa-solid fa-book-open text-comicBlue"></i>
+                </div>
+            </div>
+
+            <!-- Descrizione e Dettagli Chiave dell'Evento -->
+            <div class="space-y-8">
+                <h2 class="font-comics text-5xl md:text-6xl text-comicYellow tracking-wide comic-text-stroke">
+                    UN'ESPERIENZA UNICA
+                </h2>
+                <p class="text-gray-300 text-lg leading-relaxed">
+                    Il <strong>Trian Comics & Cosplay 2026</strong> è il festival della cultura pop di Canosa di Puglia che unisce appassionati di fumetti, cosplayer storici, gamer nostalgici e amanti del collezionismo. Unisciti a noi per un'intera giornata di pura condivisione, divertimento e spettacolo!
+                </p>
+                
+                <!-- Quick Info Bullet Points -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                    <div class="flex items-center gap-4 bg-cardBg/60 p-4 rounded-xl border border-gray-800">
+                        <span class="bg-comicBlue text-black font-bold p-3 rounded-lg text-xl"><i class="fa-solid fa-ticket"></i></span>
+                        <div>
+                            <h4 class="font-bold text-lg">Ingresso Libero</h4>
+                            <p class="text-sm text-gray-400">Accesso gratuito a tutte le aree esterne</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-cardBg/60 p-4 rounded-xl border border-gray-800">
+                        <span class="bg-comicRed text-white font-bold p-3 rounded-lg text-xl"><i class="fa-solid fa-trophy"></i></span>
+                        <div>
+                            <h4 class="font-bold text-lg">Premi Esclusivi</h4>
+                            <p class="text-sm text-gray-400">Montepremi per i vincitori delle gare cosplay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Sezione Programma e Attività principali (dalla locandina) -->
+    <section id="programma" class="py-20 bg-black/40 border-y-4 border-black px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 relative">
+                <h2 class="font-comics text-5xl md:text-7xl text-white tracking-wide inline-block comic-text-stroke drop-shadow-[0_4px_0_rgba(255,214,0,1)]">
+                    PROGRAMMA & ATTRAZIONI
+                </h2>
+                <p class="text-gray-400 text-lg md:text-xl mt-4">Direttamente dalle aree speciali illustrate nel nostro poster ufficiale!</p>
+            </div>
+
+            <!-- Grid delle 3 Attività Principali indicate nella locandina -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1: GARE COSPLAY -->
+                <div class="bg-cardBg rounded-2xl comic-border overflow-hidden hover:scale-105 transition-all duration-300 flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="w-16 h-16 rounded-full bg-comicRed flex items-center justify-center text-white text-3xl mb-6 comic-border-sm">
+                            <i class="fa-solid fa-mask"></i>
+                        </div>
+                        <span class="bg-comicRed/20 text-comicRed border border-comicRed text-xs font-bold uppercase px-3 py-1 rounded-full">Gara Ufficiale</span>
+                        <h3 class="font-comics text-3xl text-white mt-4 tracking-wide">GARE COSPLAY</h3>
+                        <p class="text-gray-400 mt-4 leading-relaxed">
+                            Mostra a tutti la tua passione e abilità! Sfila sul palco principale interpretando il tuo personaggio preferito di anime, manga, serie tv o videogiochi. Una giuria di professionisti valuterà costumi, interpretazione ed accessori.
+                        </p>
+                    </div>
+                    <div class="bg-black/40 p-6 border-t border-gray-800">
+                        <a href="#iscriviti" class="text-comicRed font-bold flex items-center gap-2 hover:underline">
+                            Iscriviti alla gara cosplay <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: AREA RETRO-GAMING -->
+                <div class="bg-cardBg rounded-2xl comic-border overflow-hidden hover:scale-105 transition-all duration-300 flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="w-16 h-16 rounded-full bg-comicBlue flex items-center justify-center text-black text-3xl mb-6 comic-border-sm">
+                            <i class="fa-solid fa-gamepad"></i>
+                        </div>
+                        <span class="bg-comicBlue/20 text-comicBlue border border-comicBlue text-xs font-bold uppercase px-3 py-1 rounded-full">Area Interattiva</span>
+                        <h3 class="font-comics text-3xl text-white mt-4 tracking-wide">AREA RETRO-GAMING</h3>
+                        <p class="text-gray-400 mt-4 leading-relaxed">
+                            Riscopri i grandi classici che hanno fatto la storia dei videogiochi. Cabinati arcade originali anni '80 e '90, postazioni di retro-console (NES, Sega Mega Drive, PlayStation 1) e sfide multiplayer mozzafiato a Mario Kart e Street Fighter!
+                        </p>
+                    </div>
+                    <div class="bg-black/40 p-6 border-t border-gray-800">
+                        <span class="text-comicBlue font-bold flex items-center gap-2">
+                            🎮 Tornei aperti a tutti
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 3: INCONTRI CON AUTORI -->
+                <div class="bg-cardBg rounded-2xl comic-border overflow-hidden hover:scale-105 transition-all duration-300 flex flex-col justify-between">
+                    <div class="p-8">
+                        <div class="w-16 h-16 rounded-full bg-comicPurple flex items-center justify-center text-white text-3xl mb-6 comic-border-sm">
+                            <i class="fa-solid fa-pen-nib"></i>
+                        </div>
+                        <span class="bg-comicPurple/20 text-comicPurple border border-comicPurple text-xs font-bold uppercase px-3 py-1 rounded-full">Incontri Speciali</span>
+                        <h3 class="font-comics text-3xl text-white mt-4 tracking-wide">INCONTRI CON AUTORI</h3>
+                        <p class="text-gray-400 mt-4 leading-relaxed">
+                            Vieni a conoscere dal vivo fumettisti professionisti, illustratori emergenti e sceneggiatori del panorama nazionale. Potrai partecipare ai firmacopie nell'Artist Alley, assistere a panel dedicati e acquistare stampe firmate.
+                        </p>
+                    </div>
+                    <div class="bg-black/40 p-6 border-t border-gray-800">
+                        <span class="text-comicPurple font-bold flex items-center gap-2">
+                            ✍️ Firmacopie & Sketching
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Modulo Iscrizione Cosplay Interattivo -->
+    <section id="iscriviti" class="py-20 px-6 max-w-4xl mx-auto">
+        <div class="bg-cardBg comic-border p-8 md:p-12 rounded-3xl relative">
+            <div class="absolute -top-6 -right-6 transform rotate-12 bg-comicYellow text-black font-comics text-2xl px-6 py-2 rounded-lg comic-border">
+                ZAP!
+            </div>
+            
+            <div class="text-center mb-8">
+                <h2 class="font-comics text-4xl md:text-5xl text-white tracking-wide comic-text-stroke">ISCRIVITI AL CONCORSO O RICHIEDI INFO</h2>
+                <p class="text-gray-400 mt-2">Compila il modulo per bloccare il tuo posto sul palco o ricevere aggiornamenti.</p>
+            </div>
+
+            <!-- Form Interattivo con simulazione di invio -->
+            <form id="cosplayForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 mb-2" for="name">Nome / Nome d'Arte *</label>
+                        <input class="w-full bg-black border-2 border-gray-700 rounded-lg p-3 text-white focus:border-comicRed focus:outline-none transition duration-200" type="text" id="name" required placeholder="Es. Tony Stark">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 mb-2" for="email">Indirizzo Email *</label>
+                        <input class="w-full bg-black border-2 border-gray-700 rounded-lg p-3 text-white focus:border-comicBlue focus:outline-none transition duration-200" type="email" id="email" required placeholder="Es. mail@esempio.it">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 mb-2" for="subject">Personaggio Interpretato (opzionale)</label>
+                        <input class="w-full bg-black border-2 border-gray-700 rounded-lg p-3 text-white focus:border-comicPurple focus:outline-none transition duration-200" type="text" id="character" placeholder="Es. Batman, Naruto, Zelda...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 mb-2" for="group">Tipo di Esibizione *</label>
+                        <select class="w-full bg-black border-2 border-gray-700 rounded-lg p-3 text-white focus:border-comicYellow focus:outline-none transition duration-200" id="type" required>
+                            <option value="singolo">Singolo Cosplayer</option>
+                            <option value="gruppo">Gruppo Cosplay</option>
+                            <option value="visitatore">Richiesta Info / Stand Espositore</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold uppercase tracking-wider text-gray-300 mb-2" for="message">Note Aggiuntive / Richieste speciali</label>
+                    <textarea class="w-full bg-black border-2 border-gray-700 rounded-lg p-3 text-white h-32 focus:border-comicRed focus:outline-none transition duration-200" id="message" placeholder="Scrivici qui se hai bisogno di un supporto audio particolare, camerini dedicati o se sei un espositore..."></textarea>
+                </div>
+
+                <div class="text-center pt-4">
+                    <button type="submit" class="w-full md:w-auto bg-comicYellow text-black font-comics text-2xl tracking-widest px-12 py-4 rounded-xl comic-border comic-btn-hover transition-all duration-200">
+                        🚀 INVIA LA TUA CANDIDATURA!
+                    </button>
+                </div>
+            </form>
+
+            <!-- Messaggio di Successo a scomparsa -->
+            <div id="successMessage" class="hidden mt-6 bg-green-600/20 border-2 border-green-500 text-green-300 p-6 rounded-xl text-center">
+                <h3 class="font-bold text-xl mb-1">🎉 Registrazione Inviata con Successo!</h3>
+                <p>Ti abbiamo inviato un'email di conferma con i dettagli e il regolamento della sfilata.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Logistiche, Canosa di Puglia e Mappa Virtuale -->
+    <section id="contatti" class="py-20 bg-black/40 border-t-4 border-black px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-comics text-5xl md:text-7xl text-white tracking-wide inline-block comic-text-stroke drop-shadow-[0_4px_0_rgba(157,0,255,1)]">
+                    DOVE SI TIENE L'EVENTO
+                </h2>
+                <p class="text-gray-400 text-lg md:text-xl mt-4">Scopri la meravigliosa cornice storica di Canosa di Puglia (BT)</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Simulazione Mappa Grafica Custom -->
+                <div class="bg-cardBg p-6 rounded-2xl comic-border relative min-h-[350px] flex flex-col justify-between">
+                    <div class="border-b border-gray-800 pb-4 mb-4 flex justify-between items-center">
+                        <span class="text-sm text-comicBlue font-bold uppercase"><i class="fa-solid fa-map-location-dot"></i> MAPPA LOCATION EVENTO</span>
+                        <span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded border border-green-500">Live Map</span>
+                    </div>
+
+                    <!-- Rappresentazione artistica schematica dei punti principali di Canosa di Puglia -->
+                    <div class="flex-grow flex flex-col justify-center gap-4 py-4 relative">
+                        <!-- Nodo Principale 1 -->
+                        <div class="flex items-center gap-3 bg-black/60 p-3 rounded-lg border border-comicRed transform -rotate-1">
+                            <span class="bg-comicRed text-white text-xs px-2 py-1 rounded font-bold">A</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Palazzo Iliceto / Area Espositiva</h4>
+                                <p class="text-xs text-gray-400">Stand commerciali, Artist Alley, Firmacopie</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Linea di collegamento visiva -->
+                        <div class="w-1 h-8 bg-dashed bg-gray-700 ml-5"></div>
+
+                        <!-- Nodo Principale 2 -->
+                        <div class="flex items-center gap-3 bg-black/60 p-3 rounded-lg border border-comicYellow transform rotate-1">
+                            <span class="bg-comicYellow text-black text-xs px-2 py-1 rounded font-bold">B</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-comicYellow">Piazza Vittorio Veneto / Palco Centrale</h4>
+                                <p class="text-xs text-gray-400">Gara Cosplay, Presentazioni, Live Show</p>
+                            </div>
+                        </div>
+
+                        <!-- Linea di collegamento visiva -->
+                        <div class="w-1 h-8 bg-dashed bg-gray-700 ml-5"></div>
+
+                        <!-- Nodo Principale 3 -->
+                        <div class="flex items-center gap-3 bg-black/60 p-3 rounded-lg border border-comicBlue transform -rotate-1">
+                            <span class="bg-comicBlue text-black text-xs px-2 py-1 rounded font-bold">C</span>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Centro Servizi Culturali / Area Gaming</h4>
+                                <p class="text-xs text-gray-400">Retro-gaming, Cabinati arcade, Tornei</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 p-3 rounded-lg text-center text-xs text-gray-400 mt-4">
+                        💡 Navetta gratuita disponibile dalla stazione di Canosa di Puglia.
+                    </div>
+                </div>
+
+                <!-- Info ed Elenco Contatti -->
+                <div class="space-y-6">
+                    <h3 class="font-comics text-4xl text-comicYellow tracking-wide">COME RAGGIUNGERCI & ALLOGGIO</h3>
+                    <p class="text-gray-300">
+                        Canosa di Puglia è facilmente raggiungibile in auto tramite l'autostrada A14 (Uscita Canosa). Per chi viaggia in treno, sono attivi servizi navetta dalle stazioni limitrofe per tutta la durata dell'evento.
+                    </p>
+                    
+                    <div class="space-y-4 pt-4">
+                        <div class="flex items-center gap-4 text-gray-300">
+                            <i class="fa-solid fa-envelope text-2xl text-comicRed w-8"></i>
+                            <span>info@triancomics.it</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-gray-300">
+                            <i class="fa-solid fa-phone text-2xl text-comicBlue w-8"></i>
+                            <span>+39 0883 1234567</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-gray-300">
+                            <i class="fa-brands fa-instagram text-2xl text-comicPurple w-8"></i>
+                            <span>@triancomicsandcosplay</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sezione Sponsor e Loghi come da locandina originale -->
+    <section class="py-16 bg-darkBg border-t-4 border-black text-center px-4">
+        <div class="max-w-6xl mx-auto">
+            <h4 class="font-comics text-2xl text-gray-400 tracking-wider mb-8">PARTNER E SPONSOR DELL'EVENTO</h4>
+            
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-80 hover:opacity-100 transition-opacity duration-300">
+                <!-- Spazio Logo Trian Comics (con design in evidenza) -->
+                <div class="bg-black/60 px-6 py-4 rounded-xl border-2 border-comicRed text-comicRed font-comics text-lg tracking-wide comic-border-sm w-48 text-center">
+                    TRIAN COMICS
+                </div>
+                <!-- Altri placeholder per i loghi della locandina -->
+                <div class="bg-black/40 px-6 py-4 rounded-xl border border-gray-800 text-gray-500 font-bold tracking-widest text-sm w-40 text-center">
+                    LOGO SPONSOR
+                </div>
+                <div class="bg-black/40 px-6 py-4 rounded-xl border border-gray-800 text-gray-500 font-bold tracking-widest text-sm w-40 text-center">
+                    LOGO SPONSOR
+                </div>
+                <div class="bg-black/40 px-6 py-4 rounded-xl border border-gray-800 text-gray-500 font-bold tracking-widest text-sm w-48 text-center">
+                    PATROCINIO COMUNE
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer finale -->
+    <footer class="bg-black py-8 border-t-2 border-gray-900 text-center text-sm text-gray-500 px-4">
+        <p class="mb-2">&copy; 2026 Trian Comics & Cosplay - Canosa di Puglia. Tutti i diritti riservati.</p>
+        <p>Sito vetrina ufficiale ideato per promuovere la cultura Nerd e Pop sul territorio pugliese.</p>
+    </footer>
+
+    <!-- Script per simulazioni d'invio form -->
+    <script>
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            // Nasconde il form e mostra il banner di successo con effetto smooth
+            document.getElementById('cosplayForm').classList.add('hidden');
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.remove('hidden');
+            successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
