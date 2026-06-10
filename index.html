@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trajan Comics & Cosplay 2026 - Canosa di Puglia</title>
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src https://fonts.gstatic.com https://cdnjs.cloudflare.com; frame-src https://www.google.com; img-src 'self' data:; connect-src 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (dev CDN — replace with a production build before go-live) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font Google: Inter (Design pulito) e Noto Sans JP (per i Kanji decorativi) -->
@@ -14,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome per le icone -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <script>
         tailwind.config = {
@@ -507,8 +512,9 @@
                     style="border:0; display:block;"
                     allowfullscreen=""
                     loading="lazy"
+                    sandbox="allow-scripts allow-same-origin allow-popups"
                     referrerpolicy="no-referrer-when-downgrade"
-                    title="Location Trian Comics 2026">
+                    title="Location Trajan Comics 2026">
                 </iframe>
             </div>
 
@@ -555,8 +561,17 @@
         /* Gestione Invio Form */
         function handleFormSubmit(event) {
             event.preventDefault();
+
+            var nameEl  = document.getElementById('name');
+            var emailEl = document.getElementById('email');
+            var typeEl  = document.getElementById('type');
+            if (!nameEl.value.trim() || !emailEl.value.trim() || !typeEl.value) return;
+
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailEl.value.trim())) return;
+
             document.getElementById('cosplayForm').style.display = 'none';
-            const successMsg = document.getElementById('successMessage');
+            var successMsg = document.getElementById('successMessage');
             successMsg.classList.remove('hidden');
             successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
