@@ -26,10 +26,10 @@
                     },
                     colors: {
                         brand: {
-                            bg: '#09090b',       /* Sfondo principale (zinc-950) */
-                            card: '#18181b',     /* Sfondo card (zinc-900) */
-                            border: '#27272a',   /* Bordi leggeri (zinc-800) */
-                            muted: '#a1a1aa',    /* Testo secondario (zinc-400) */
+                            bg: '#3d2d5a',       /* Sfondo principale (viola-indaco) */
+                            card: '#4a3a6e',     /* Sfondo card (viola scuro) */
+                            border: '#6b5b8f',   /* Bordi leggeri (viola medio) */
+                            muted: '#c4b0d9',    /* Testo secondario (viola chiaro) */
                             accent: '#ffffff',   /* Accento bianco puro */
                             yellow: '#FFD600',   /* Giallo vibrante in stile comics */
                         }
@@ -56,7 +56,18 @@
             -webkit-backdrop-filter: blur(12px);
         }
         /* Disabilita scroll orizzontale */
-        body { overflow-x: hidden; }
+        body {
+            overflow-x: hidden;
+            background-image:
+                linear-gradient(135deg, rgba(74,123,167,0.75) 0%, rgba(138,92,168,0.65) 25%, rgba(216,114,110,0.55) 50%, rgba(245,169,98,0.45) 75%, rgba(255,179,102,0.35) 100%),
+                url('drago.png');
+            background-size: 130% auto;
+            background-position: center top;
+            background-attachment: scroll;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+            min-height: 100vh;
+        }
 
         /* Scroll fade-in minimal */
         .fade-in-up {
@@ -75,22 +86,22 @@
     <!-- ══════════════════════════════════════
          NAVBAR MINIMAL
     ══════════════════════════════════════ -->
-    <nav class="fixed top-0 left-0 w-full glass-nav bg-brand-bg/80 border-b border-brand-border z-50 py-4 px-6 transition-all duration-300">
+    <nav class="fixed top-0 left-0 w-full glass-nav bg-white/30 border-b border-white/20 z-50 py-4 px-6 transition-all duration-300">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <!-- Logo -->
-            <a href="#hero" class="text-xl font-bold tracking-widest uppercase flex items-center gap-2 group hover:text-brand-yellow transition-colors">
+            <a href="#hero" class="text-xl font-bold tracking-widest uppercase flex items-center gap-2 group hover:text-white transition-colors text-white">
                 <span>ARCOMIX</span>
-                <span class="text-brand-muted font-normal group-hover:text-brand-yellow/70 transition-colors">GAMES</span>
-                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-xs font-jp text-brand-yellow">祭</span>
+                <span class="text-white font-normal group-hover:text-white/70 transition-colors">GAMES</span>
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-xs font-jp text-white">祭</span>
             </a>
-            
+
             <!-- Link -->
-            <div class="flex flex-wrap justify-center items-center gap-6 text-xs md:text-sm font-medium tracking-widest uppercase text-brand-muted">
-                <a href="#evento" class="hover:text-brand-yellow transition-colors duration-300">L'Evento</a>
-                <a href="#programma" class="hover:text-brand-yellow transition-colors duration-300">Programma</a>
-                <a href="#tcg" class="hover:text-brand-yellow transition-colors duration-300">Tornei TCG</a>
-                <a href="#iscriviti" class="hover:text-brand-yellow transition-colors duration-300">Iscriviti</a>
-                <a href="#contatti" class="hover:text-brand-yellow transition-colors duration-300">Location</a>
+            <div class="flex flex-wrap justify-center items-center gap-6 text-xs md:text-sm font-medium tracking-widest uppercase text-white/80">
+                <a href="#evento" class="hover:text-white transition-colors duration-300">L'Evento</a>
+                <a href="#programma" class="hover:text-white transition-colors duration-300">Programma</a>
+                <a href="#tcg" class="hover:text-white transition-colors duration-300">Tornei TCG</a>
+                <a href="#iscriviti" class="hover:text-white transition-colors duration-300">Iscriviti</a>
+                <a href="#contatti" class="hover:text-white transition-colors duration-300">Location</a>
             </div>
         </div>
     </nav>
@@ -101,38 +112,38 @@
     <header id="hero" class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-10 px-4 text-center overflow-hidden">
         
         <!-- Sfondo con bagliore sottile -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-yellow/10 rounded-full blur-[120px] -z-10"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/20 rounded-full blur-[120px] -z-10"></div>
 
         <!-- Tag data/luogo minimal -->
-        <div class="mb-8 px-4 py-1.5 rounded-full border border-brand-border bg-brand-card/50 text-xs font-medium tracking-widest text-brand-muted uppercase flex items-center gap-3 fade-in-up">
-            <span class="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
+        <div class="mb-8 px-4 py-1.5 rounded-full border-2 border-white bg-white/20 text-xs font-medium tracking-widest text-white uppercase flex items-center gap-3 fade-in-up">
+            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
             18 Luglio 2026 — Canosa di Puglia
         </div>
 
         <!-- Titolo Principale Elegante -->
-        <h1 class="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tighter leading-tight mb-6 relative fade-in-up" style="transition-delay: 100ms;">
-            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-brand-yellow to-yellow-600">
-                ARCOMIX GAMES
-            </span>
-            <span class="block text-4xl sm:text-6xl md:text-7xl font-light text-brand-muted mt-2">
-                & COSPLAY
-            </span>
-            <!-- Kanji gigante (Festival) -->
-            <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] md:text-[25rem] font-jp text-white/[0.02] -z-10 select-none">
-                祭
-            </span>
+        <h1 class="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tighter leading-tight mb-6 relative fade-in-up flex items-center justify-center gap-4 md:gap-8" style="transition-delay: 100ms;">
+            <span class="text-[6rem] md:text-[10rem] font-jp text-white/15 select-none flex-shrink-0">祭</span>
+            <div>
+                <span class="block" style="text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff; color: #FF6B35;">
+                    ARCOMIX GAMES
+                </span>
+                <span class="block text-4xl sm:text-6xl md:text-7xl font-light mt-2" style="text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -3px 0 0 #fff, 3px 0 0 #fff, 0 -3px 0 #fff, 0 3px 0 #fff; color: #FF6B35;">
+                    & COSPLAY
+                </span>
+            </div>
+            <span class="text-[6rem] md:text-[10rem] font-jp text-white/15 select-none flex-shrink-0">漫</span>
         </h1>
 
-        <p class="max-w-2xl text-brand-muted text-lg md:text-xl font-light mb-12 fade-in-up" style="transition-delay: 200ms;">
+        <p class="max-w-2xl text-white text-lg md:text-xl font-light mb-12 fade-in-up" style="transition-delay: 200ms;">
             La pop culture atterra in Puglia. <br class="hidden md:block">Un'esperienza immersiva tra manga, gaming, cosplay e autori.
         </p>
 
         <!-- CTA -->
         <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 fade-in-up" style="transition-delay: 300ms;">
-            <a href="#iscriviti" class="bg-brand-yellow text-black hover:bg-yellow-400 text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-colors duration-300">
+            <a href="#iscriviti" class="bg-white text-gray-900 hover:bg-gray-100 text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-colors duration-300">
                 Registrati Ora
             </a>
-            <a href="#programma" class="bg-brand-card border border-brand-border text-brand-accent hover:border-brand-yellow hover:text-brand-yellow text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-all duration-300">
+            <a href="#programma" class="bg-white/20 border-2 border-white text-white hover:bg-white hover:text-gray-900 text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-all duration-300">
                 Scopri il Programma
             </a>
         </div>
@@ -141,7 +152,7 @@
     <!-- ══════════════════════════════════════
          MARQUEE (Fascia Scorrevole)
     ══════════════════════════════════════ -->
-    <div class="w-full bg-brand-yellow text-black py-3 overflow-hidden flex whitespace-nowrap border-y border-brand-yellow select-none">
+    <div class="w-full bg-white/90 text-gray-900 py-3 overflow-hidden flex whitespace-nowrap border-y border-white select-none">
         <div class="animate-marquee flex items-center text-sm font-bold tracking-widest uppercase">
             <span class="mx-4">MANGA</span><span class="mx-2">•</span>
             <span class="mx-4">COMICS</span><span class="mx-2">•</span>
@@ -212,7 +223,7 @@
     <!-- ══════════════════════════════════════
          PROGRAMMA & ATTRAZIONI
     ══════════════════════════════════════ -->
-    <section id="programma" class="py-24 px-6 border-t border-brand-border bg-[#050505]">
+    <section id="programma" class="py-24 px-6 border-t border-brand-border bg-[#4a3a6e]/95">
         <div class="max-w-6xl mx-auto">
             
             <div class="mb-16 fade-in-up">
@@ -400,7 +411,7 @@
     <!-- ══════════════════════════════════════
          MODULO ISCRIZIONE (Clean Form)
     ══════════════════════════════════════ -->
-    <section id="iscriviti" class="py-24 px-6 border-t border-brand-border bg-[#050505]">
+    <section id="iscriviti" class="py-24 px-6 border-t border-brand-border bg-[#4a3a6e]/95">
         <div class="max-w-3xl mx-auto fade-in-up">
             <div class="flex items-center justify-between mb-12 border-b border-brand-border pb-6">
                 <h3 class="text-2xl md:text-3xl font-bold tracking-tight">連絡 — Registrazioni</h3>
@@ -518,7 +529,7 @@
     <!-- ══════════════════════════════════════
          SPONSOR (Minimal)
     ══════════════════════════════════════ -->
-    <section class="py-16 border-t border-brand-border bg-[#050505] text-center px-6">
+    <section class="py-16 border-t border-brand-border bg-[#4a3a6e]/95 text-center px-6">
         <div class="max-w-6xl mx-auto fade-in-up">
             <h4 class="text-xs font-bold tracking-widest text-brand-yellow uppercase mb-8">Partner e Sponsor</h4>
             <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-500">
@@ -556,8 +567,21 @@
     <script src="src/js/scrollObserver.js"></script>
     <script src="src/js/navigation.js"></script>
     <script>
+        function initMovingBackground() {
+            const body = document.body;
+            const maxShift = 150;
+            const updateBackground = () => {
+                const scrollY = window.scrollY;
+                const shift = Math.min(scrollY * 0.25, maxShift);
+                body.style.backgroundPosition = `center calc(${shift}px)`;
+            };
+            window.addEventListener('scroll', updateBackground, { passive: true });
+            updateBackground();
+        }
+
         initScrollAnimations();
         initSmoothScrollLinks();
+        initMovingBackground();
     </script>
 </body>
 </html>
