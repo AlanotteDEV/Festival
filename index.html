@@ -1,404 +1,563 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trajan Comics Map</title>
-<style>
-  :root {
-    --bg-dark: #1a1410;
-    --orange: #ff8c1a;
-    --orange-deep: #e8650a;
-  }
-
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    height: 100%;
-    background: var(--bg-dark);
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    overflow: hidden;
-  }
-
-  .page {
-    height: 100vh;
-    height: 100dvh;
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(10px, 2vh, 20px) 12px;
-    overflow: hidden;
-    gap: clamp(8px, 1.5vh, 14px);
-  }
-
-  .title-bar {
-    flex: 0 0 auto;
-  }
-
-  .map-wrap {
-    position: relative;
-    flex: 0 1 auto;
-    max-width: 100%;
-    max-height: 100%;
-    min-height: 0;
-    min-width: 0;
-    width: fit-content;
-    height: fit-content;
-    display: flex;
-  }
-
-  .map-wrap img {
-    display: block;
-    height: auto;
-    width: auto;
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 8px;
-    user-select: none;
-    -webkit-user-drag: none;
-  }
-
-  .hint {
-    flex: 0 0 auto;
-  }
-
-  .marker {
-    position: absolute;
-    width: 7%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 3px solid white;
-    cursor: pointer;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .marker:hover, .marker:focus {
-    transform: translate(-50%, -50%) scale(1.18);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.65);
-    outline: none;
-    z-index: 6;
-  }
-
-  .marker:active {
-    transform: translate(-50%, -50%) scale(1.05);
-  }
-
-  .marker::after {
-    content: '';
-    width: 38%;
-    height: 38%;
-    background: white;
-    border-radius: 50%;
-  }
-
-  .marker.pulse::before {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    opacity: 0.6;
-    animation: pulse 2s ease-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes pulse {
-    0% { transform: scale(0.8); opacity: 0.7; }
-    100% { transform: scale(1.6); opacity: 0; }
-  }
-
-  /* Overlay + Popup */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 20px;
-  }
-
-  .overlay.active {
-    display: flex;
-  }
-
-  .popup {
-    background: #fffaf2;
-    border-radius: 16px;
-    max-width: 380px;
-    width: 100%;
-    overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    transform: translateY(20px) scale(0.95);
-    opacity: 0;
-    animation: popIn 0.25s forwards;
-    border: 4px solid var(--orange);
-  }
-
-  @keyframes popIn {
-    to { transform: translateY(0) scale(1); opacity: 1; }
-  }
-
-  .popup-header {
-    padding: 18px 50px 14px 20px;
-    color: white;
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: 0.5px;
-    position: relative;
-  }
-
-  .popup-close {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.25);
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .popup-close:hover {
-    background: rgba(255,255,255,0.4);
-  }
-
-  .popup-body {
-    padding: 18px 20px 22px;
-    color: #3a2c1f;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  .popup-body p {
-    margin: 0 0 10px;
-  }
-
-  .popup-body p:last-child {
-    margin-bottom: 0;
-  }
-
-  .popup-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 16px;
-  }
-
-  .popup-link {
-    flex: 1 1 auto;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.92rem;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: var(--orange);
-    color: white;
-    transition: filter 0.15s ease, transform 0.15s ease;
-    white-space: nowrap;
-  }
-
-  .popup-link:hover {
-    filter: brightness(1.1);
-    transform: translateY(-1px);
-  }
-
-  .popup-link.secondary {
-    background: #3a2c1f;
-  }
-
-  .popup-icon {
-    font-size: 1.6rem;
-    margin-right: 8px;
-  }
-
-  .title-bar {
-    text-align: center;
-    color: var(--orange);
-    font-weight: 900;
-    font-size: clamp(1.1rem, 4vh, 1.6rem);
-    letter-spacing: 1px;
-    text-shadow: 0 0 12px rgba(255,140,26,0.4);
-  }
-
-  .hint {
-    text-align: center;
-    color: #aaa;
-    font-size: 0.85rem;
-    font-style: italic;
-  }
-</style>
-</head>
-<body>
-
-<div class="page">
-  <div class="title-bar">🗺️ Trajan Comics Map</div>
-
-  <div class="map-wrap">
-    <img src="trajan-map.jpg" alt="Mappa evento Trajan Comics">
-
-    <!-- Marker: Trucco e parrucco (rosa) -->
-    <div class="marker pulse" style="left:34.3%; top:18.5%;; background:#ff3fb0; color:#ff3fb0;"
-         tabindex="0" role="button" aria-label="Trucco e parrucco"
-         data-title="💄 Trucco e parrucco"
-         data-color="#ff3fb0"
-         data-body="Vieni a trasformarti! Truccatori e parrucchieri professionisti ti aiuteranno a completare il tuo cosplay con make-up a tema e acconciature ispirate ai tuoi personaggi preferiti.<br><br><strong>Aggiungi qui orari e dettagli specifici.</strong>">
-    </div>
-
-    <!-- Marker: Console DJ (azzurro) -->
-    <div class="marker pulse" style="left:31.0%; top:34.5%; background:#1fc7e0; color:#1fc7e0;"
-         tabindex="0" role="button" aria-label="Console DJ"
-         data-title="🎧 Console DJ"
-         data-color="#1fc7e0"
-         data-body="La musica che accompagna tutto l'evento! Qui trovi la console del DJ con set a tema anime, videogiochi e colonne sonore manga.<br><br><strong>Aggiungi qui orari e dettagli specifici.</strong>">
-    </div>
-
-    <!-- Marker: Giochi da tavolo (bordeaux) -->
-    <div class="marker pulse" style="left:54.6%; top:33.0%; background:#8b1a2b; color:#8b1a2b;"
-         tabindex="0" role="button" aria-label="Giochi da tavolo"
-         data-title="🎲 Giochi da tavolo"
-         data-color="#8b1a2b"
-         data-image="image2.png"
-         data-body="Area gestita dai ragazzi del Furor Normannorum di Canosa: giochi da tavolo, demo e sfide aperte a tutti gli appassionati. Vieni a scoprire i giochi in programma!"
-         data-links='[{"label":"📷 Instagram","url":"https://www.instagram.com/furorenormannorumcanosa/"}]'>
-    </div>
-
-    <!-- Marker: Stand Manbaga (rosso) - Modificato con l'immagine personalizzata nel popup -->
-    <div class="marker pulse" style="left:55.6%; top:24.0%; background:#e62b2b; color:#e62b2b;"
-         tabindex="0" role="button" aria-label="Stand Manbaga"
-         data-title="Stand Manbaga"
-         data-color="#e62b2b"
-         data-image="image0.png"
-         data-body="Fumetteria di Canosa di Puglia specializzata in manga, fumetti, trading card game (Pokémon, Yu-Gi-Oh!, Magic, One Piece) e gadget a tema anime. Allo stand troverai novità, gadget esclusivi e tanto altro!"
-         data-links='[{"label":"📷 Instagram","url":"https://www.instagram.com/_manbaga_/"},{"label":"🌐 Sito web","url":"https://manbagacomicsandgames.vercel.app/"}]'>
-    </div>
-
-    <!-- Marker: Fai Da Tela (arancione) -->
-    <div class="marker pulse" style="left:66.2%; top:34.0%; background:#ff9a1f; color:#ff9a1f;"
-         tabindex="0" role="button" aria-label="Fai Da Tela"
-         data-title="Fai Da Tela"
-         data-color="#ff9a1f"
-         data-image="image1.png"
-         data-body="Stand a tema artistico/tattoo: vieni a scoprire le creazioni a tema manga e anime di Fai Da Tela. Seguili su Instagram per maggiori dettagli su cosa trovare allo stand!"
-         data-links='[{"label":"📷 Instagram","url":"https://www.instagram.com/fai.da.tela_tattoo/"}]'>
-    </div>
-
-    <!-- Marker: Panificio Traiano (food, in basso) -->
-    <div class="marker pulse" style="left:60.2%; top:91.2%; background:#ff8c1a; color:#ff8c1a;"
-         tabindex="0" role="button" aria-label="Panificio Traiano"
-         data-title="Panificio Traiano"
-         data-image="image3.png"
-         data-color="#ff8c1a"
-         data-body="Punto ristoro dell'evento: panini, focacce e bevande per ricaricarti tra una postazione e l'altra.<br><br><strong>Aggiungi qui orari e dettagli specifici.</strong>">
-    </div>
-
-  </div>
-
-  <div class="hint">Tocca un pin colorato per scoprire cosa trovi in ogni postazione ✨</div>
-</div>
-
-<!-- Popup overlay -->
-<div class="overlay" id="overlay">
-  <div class="popup" id="popup">
-    <div class="popup-header" id="popupHeader">
-      <button class="popup-close" id="popupClose" aria-label="Chiudi">✕</button>
-      <span id="popupTitle"></span>
-    </div>
-    <div class="popup-body" id="popupBody"></div>
-  </div>
-</div>
-
-<script>
-  const overlay = document.getElementById('overlay');
-  const popupHeader = document.getElementById('popupHeader');
-  const popupTitle = document.getElementById('popupTitle');
-  const popupBody = document.getElementById('popupBody');
-  const popupClose = document.getElementById('popupClose');
-
-  function openPopup(marker) {
-    const title = marker.getAttribute('data-title');
-    const body = marker.getAttribute('data-body');
-    const color = marker.getAttribute('data-color');
-    const linksAttr = marker.getAttribute('data-links');
-    const imageAttr = marker.getAttribute('data-image');
-
-    popupTitle.textContent = title;
-    popupHeader.style.background = color;
-
-    let html = '';
-
-    // Se è presente un'immagine personalizzata per il popup (come per Manbaga), la renderizziamo in cima
-    if (imageAttr) {
-      html += `
-        <div style="display: flex; justify-content: center; width: 100%; margin-bottom: 16px;">
-          <img src="${imageAttr}" alt="${title}" style="max-width: 100%; max-height: 250px; height: auto; border-radius: 8px; object-fit: contain; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onerror="this.style.display='none'">
-        </div>
-      `;
-    }
-
-    html += `<p>${body}</p>`;
-
-    if (linksAttr) {
-      try {
-        const links = JSON.parse(linksAttr);
-        if (Array.isArray(links) && links.length) {
-          html += '<div class="popup-links">';
-          links.forEach((link, i) => {
-            const cls = i === 0 ? 'popup-link' : 'popup-link secondary';
-            html += `<a class="${cls}" href="${link.url}" target="_blank" rel="noopener noreferrer">${link.label}</a>`;
-          });
-          html += '</div>';
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcomix Games & Cosplay 2026 - Canosa di Puglia</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Google: Inter (Design pulito) e Noto Sans JP (per i Kanji decorativi) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        jp: ['Noto Sans JP', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#09090b',       /* Sfondo principale (zinc-950) */
+                            card: '#18181b',     /* Sfondo card (zinc-900) */
+                            border: '#27272a',   /* Bordi leggeri (zinc-800) */
+                            muted: '#a1a1aa',    /* Testo secondario (zinc-400) */
+                            accent: '#ffffff',   /* Accento bianco puro */
+                            yellow: '#FFD600',   /* Giallo vibrante in stile comics */
+                        }
+                    }
+                }
+            }
         }
-      } catch (e) {
-        console.warn('data-links non valido:', e);
-      }
-    }
+    </script>
 
-    popupBody.innerHTML = html;
-    overlay.classList.add('active');
-  }
+    <style>
+        /* Animazione Marquee */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 25s linear infinite;
+        }
+        /* Effetto Glassmorphism */
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        /* Disabilita scroll orizzontale */
+        body { overflow-x: hidden; }
 
-  function closePopup() {
-    overlay.classList.remove('active');
-  }
+        /* Scroll fade-in minimal */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-accent font-sans antialiased selection:bg-brand-yellow selection:text-black">
 
-  document.querySelectorAll('.marker').forEach(marker => {
-    marker.addEventListener('click', () => openPopup(marker));
-    marker.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openPopup(marker);
-      }
-    });
-  });
+    <!-- ══════════════════════════════════════
+         NAVBAR MINIMAL
+    ══════════════════════════════════════ -->
+    <nav class="fixed top-0 left-0 w-full glass-nav bg-brand-bg/80 border-b border-brand-border z-50 py-4 px-6 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Logo -->
+            <a href="#hero" class="text-xl font-bold tracking-widest uppercase flex items-center gap-2 group hover:text-brand-yellow transition-colors">
+                <span>ARCOMIX</span>
+                <span class="text-brand-muted font-normal group-hover:text-brand-yellow/70 transition-colors">GAMES</span>
+                <span class="opacity-0 group-hover:opacity-100 transition-opacity text-xs font-jp text-brand-yellow">祭</span>
+            </a>
+            
+            <!-- Link -->
+            <div class="flex flex-wrap justify-center items-center gap-6 text-xs md:text-sm font-medium tracking-widest uppercase text-brand-muted">
+                <a href="#evento" class="hover:text-brand-yellow transition-colors duration-300">L'Evento</a>
+                <a href="#programma" class="hover:text-brand-yellow transition-colors duration-300">Programma</a>
+                <a href="#tcg" class="hover:text-brand-yellow transition-colors duration-300">Tornei TCG</a>
+                <a href="#iscriviti" class="hover:text-brand-yellow transition-colors duration-300">Iscriviti</a>
+                <a href="#contatti" class="hover:text-brand-yellow transition-colors duration-300">Location</a>
+            </div>
+        </div>
+    </nav>
 
-  popupClose.addEventListener('click', closePopup);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closePopup();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closePopup();
-  });
-</script>
+    <!-- ══════════════════════════════════════
+         HERO SECTION SLEEK
+    ══════════════════════════════════════ -->
+    <header id="hero" class="relative min-h-screen flex flex-col justify-center items-center pt-32 pb-10 px-4 text-center overflow-hidden">
+        
+        <!-- Sfondo con bagliore sottile -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-yellow/10 rounded-full blur-[120px] -z-10"></div>
 
+        <!-- Tag data/luogo minimal -->
+        <div class="mb-8 px-4 py-1.5 rounded-full border border-brand-border bg-brand-card/50 text-xs font-medium tracking-widest text-brand-muted uppercase flex items-center gap-3 fade-in-up">
+            <span class="w-2 h-2 rounded-full bg-brand-yellow animate-pulse"></span>
+            18 Luglio 2026 — Canosa di Puglia
+        </div>
+
+        <!-- Titolo Principale Elegante -->
+        <h1 class="text-5xl sm:text-7xl md:text-8xl font-extrabold tracking-tighter leading-tight mb-6 relative fade-in-up" style="transition-delay: 100ms;">
+            <span class="block text-transparent bg-clip-text bg-gradient-to-b from-brand-yellow to-yellow-600">
+                ARCOMIX GAMES
+            </span>
+            <span class="block text-4xl sm:text-6xl md:text-7xl font-light text-brand-muted mt-2">
+                & COSPLAY
+            </span>
+            <!-- Kanji gigante (Festival) -->
+            <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] md:text-[25rem] font-jp text-white/[0.02] -z-10 select-none">
+                祭
+            </span>
+        </h1>
+
+        <p class="max-w-2xl text-brand-muted text-lg md:text-xl font-light mb-12 fade-in-up" style="transition-delay: 200ms;">
+            La pop culture atterra in Puglia. <br class="hidden md:block">Un'esperienza immersiva tra manga, gaming, cosplay e autori.
+        </p>
+
+        <!-- CTA -->
+        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 fade-in-up" style="transition-delay: 300ms;">
+            <a href="#iscriviti" class="bg-brand-yellow text-black hover:bg-yellow-400 text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-colors duration-300">
+                Registrati Ora
+            </a>
+            <a href="#programma" class="bg-brand-card border border-brand-border text-brand-accent hover:border-brand-yellow hover:text-brand-yellow text-sm font-semibold tracking-widest uppercase px-8 py-4 rounded-md transition-all duration-300">
+                Scopri il Programma
+            </a>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════
+         MARQUEE (Fascia Scorrevole)
+    ══════════════════════════════════════ -->
+    <div class="w-full bg-brand-yellow text-black py-3 overflow-hidden flex whitespace-nowrap border-y border-brand-yellow select-none">
+        <div class="animate-marquee flex items-center text-sm font-bold tracking-widest uppercase">
+            <span class="mx-4">MANGA</span><span class="mx-2">•</span>
+            <span class="mx-4">COMICS</span><span class="mx-2">•</span>
+            <span class="mx-4">TRADING CARDS</span><span class="mx-2">•</span>
+            <span class="mx-4">BOARD GAMES</span><span class="mx-2">•</span>
+            <span class="mx-4">COSPLAY</span><span class="mx-2">•</span>
+            <span class="mx-4">FIGURES</span><span class="mx-2">•</span>
+            <span class="mx-4">RETRO GAMING</span><span class="mx-2">•</span>
+            <span class="mx-4">ANIME</span><span class="mx-2">•</span>
+            <!-- Duplicato per loop -->
+            <span class="mx-4">MANGA</span><span class="mx-2">•</span>
+            <span class="mx-4">COMICS</span><span class="mx-2">•</span>
+            <span class="mx-4">TRADING CARDS</span><span class="mx-2">•</span>
+            <span class="mx-4">BOARD GAMES</span><span class="mx-2">•</span>
+            <span class="mx-4">COSPLAY</span><span class="mx-2">•</span>
+            <span class="mx-4">FIGURES</span><span class="mx-2">•</span>
+            <span class="mx-4">RETRO GAMING</span><span class="mx-2">•</span>
+            <span class="mx-4">ANIME</span><span class="mx-2">•</span>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         L'EVENTO
+    ══════════════════════════════════════ -->
+    <section id="evento" class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="relative aspect-square md:aspect-[4/3] bg-brand-card border border-brand-border hover:border-brand-yellow rounded-xl overflow-hidden flex items-center justify-center group fade-in-up transition-colors duration-500">
+                <div class="absolute inset-0 bg-gradient-to-tr from-brand-bg via-transparent to-transparent z-10"></div>
+                <!-- Kanji (Pop Culture/Fumetto) come grafica principale -->
+                <div class="text-[10rem] md:text-[14rem] font-jp text-brand-border group-hover:text-brand-yellow/10 group-hover:scale-105 transition-all duration-700">
+                    漫
+                </div>
+                <div class="absolute bottom-6 left-6 z-20">
+                    <p class="text-xs font-medium tracking-widest uppercase text-brand-yellow mb-1">Concept Evento</p>
+                    <p class="text-lg font-bold group-hover:text-brand-yellow transition-colors">La pop culture a Canosa.</p>
+                </div>
+            </div>
+
+            <div class="space-y-8 fade-in-up">
+                <div class="text-xs font-bold tracking-widest text-brand-muted uppercase flex items-center gap-4">
+                    <span class="w-8 h-[1px] bg-brand-yellow"></span> Info
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight">
+                    Un'esperienza<br>visiva e <span class="text-brand-yellow">ludica</span>.
+                </h2>
+                <p class="text-brand-muted leading-relaxed font-light text-lg">
+                    Il <strong>Arcomix Games & Cosplay 2026</strong> è molto più di una fiera. È uno spazio curato dove appassionati di fumetti, cosplayer storici, duellanti TCG e amanti del collezionismo si incontrano.
+                </p>
+                <div class="grid grid-cols-2 gap-8 pt-6 border-t border-brand-border">
+                    <div>
+                        <p class="text-2xl font-bold flex items-center gap-3">
+                            <i class="fa-solid fa-ticket text-brand-yellow text-lg"></i> Free
+                        </p>
+                        <p class="text-xs text-brand-muted uppercase tracking-widest mt-2">Ingresso Libero</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold flex items-center gap-3">
+                            <i class="fa-solid fa-trophy text-brand-yellow text-lg"></i> Premi
+                        </p>
+                        <p class="text-xs text-brand-muted uppercase tracking-widest mt-2">Cosplay & TCG</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         PROGRAMMA & ATTRAZIONI
+    ══════════════════════════════════════ -->
+    <section id="programma" class="py-24 px-6 border-t border-brand-border bg-[#050505]">
+        <div class="max-w-6xl mx-auto">
+            
+            <div class="mb-16 fade-in-up">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xs font-bold tracking-widest text-brand-yellow uppercase">Catalogo — Attrazioni</h2>
+                </div>
+                <h3 class="text-3xl md:text-4xl font-bold tracking-tight">IL NOSTRO<br>PROGRAMMA</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Card 1 -->
+                <div class="group bg-brand-card border border-brand-border p-8 hover:border-brand-yellow transition-colors duration-300 flex flex-col h-full relative overflow-hidden fade-in-up" style="transition-delay: 100ms;">
+                    <span class="absolute -right-4 -bottom-8 text-8xl font-jp text-white/[0.03] group-hover:text-brand-yellow/[0.05] transition-colors">装</span>
+                    <div class="flex items-end justify-between mb-8">
+                        <span class="text-xs font-bold text-brand-muted tracking-widest group-hover:text-brand-yellow transition-colors">01</span>
+                        <i class="fa-solid fa-mask text-2xl text-brand-muted group-hover:text-brand-yellow transition-colors"></i>
+                    </div>
+                    <h4 class="text-xs text-brand-muted uppercase tracking-widest mb-2">Cosplay & Stage</h4>
+                    <h3 class="text-xl font-bold mb-4">Gare Cosplay</h3>
+                    <p class="text-sm text-brand-muted font-light leading-relaxed flex-grow">
+                        Sfila sul palco principale interpretando i tuoi eroi. Una giuria di professionisti valuterà costumi, sartorialità e interpretazione.
+                    </p>
+                    <div class="mt-8 pt-6 border-t border-brand-border text-xs font-semibold tracking-widest uppercase">
+                        <a href="#iscriviti" class="flex items-center justify-between group-hover:text-brand-yellow transition-colors">
+                            Iscriviti alla gara <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group bg-brand-card border border-brand-border p-8 hover:border-brand-yellow transition-colors duration-300 flex flex-col h-full relative overflow-hidden fade-in-up" style="transition-delay: 200ms;">
+                    <span class="absolute -right-4 -bottom-8 text-8xl font-jp text-white/[0.03] group-hover:text-brand-yellow/[0.05] transition-colors">遊</span>
+                    <div class="flex items-end justify-between mb-8">
+                        <span class="text-xs font-bold text-brand-muted tracking-widest group-hover:text-brand-yellow transition-colors">02</span>
+                        <i class="fa-solid fa-layer-group text-2xl text-brand-muted group-hover:text-brand-yellow transition-colors"></i>
+                    </div>
+                    <h4 class="text-xs text-brand-muted uppercase tracking-widest mb-2">Gaming & eSports</h4>
+                    <h3 class="text-xl font-bold mb-4">Tornei TCG</h3>
+                    <p class="text-sm text-brand-muted font-light leading-relaxed flex-grow">
+                        Sfida i migliori duellanti. Tornei ufficiali per Pokémon, Yu-Gi-Oh!, Magic e One Piece. Iscrizione obbligatoria, posti limitati.
+                    </p>
+                    <div class="mt-8 pt-6 border-t border-brand-border text-xs font-semibold tracking-widest uppercase">
+                        <a href="#tcg" class="flex items-center justify-between group-hover:text-brand-yellow transition-colors">
+                            Scopri i tornei <i class="fa-solid fa-arrow-right transform group-hover:translate-x-2 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group bg-brand-card border border-brand-border p-8 hover:border-brand-yellow transition-colors duration-300 flex flex-col h-full relative overflow-hidden fade-in-up" style="transition-delay: 300ms;">
+                    <span class="absolute -right-4 -bottom-8 text-8xl font-jp text-white/[0.03] group-hover:text-brand-yellow/[0.05] transition-colors">描</span>
+                    <div class="flex items-end justify-between mb-8">
+                        <span class="text-xs font-bold text-brand-muted tracking-widest group-hover:text-brand-yellow transition-colors">03</span>
+                        <i class="fa-solid fa-pen-nib text-2xl text-brand-muted group-hover:text-brand-yellow transition-colors"></i>
+                    </div>
+                    <h4 class="text-xs text-brand-muted uppercase tracking-widest mb-2">Art & Books</h4>
+                    <h3 class="text-xl font-bold mb-4">Incontri con Autori</h3>
+                    <p class="text-sm text-brand-muted font-light leading-relaxed flex-grow">
+                        Vieni a conoscere dal vivo fumettisti professionisti, illustratori emergenti e sceneggiatori. Partecipa ai firmacopie nell'Artist Alley.
+                    </p>
+                    <div class="mt-8 pt-6 border-t border-brand-border text-xs font-semibold tracking-widest uppercase">
+                        <span class="flex items-center text-brand-muted group-hover:text-brand-yellow transition-colors">
+                            Firmacopie & Sketching
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TORNEI TCG (Grid Dettagliata)
+    ══════════════════════════════════════ -->
+    <section id="tcg" class="py-24 px-6 border-t border-brand-border max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 fade-in-up">
+            <div>
+                <h2 class="text-xs font-bold tracking-widest text-brand-yellow uppercase mb-4">Competizioni</h2>
+                <h3 class="text-3xl md:text-4xl font-bold tracking-tight">TORNEI CARTE<br>COLLEZIONABILI</h3>
+            </div>
+            <p class="text-brand-muted text-sm md:text-base font-light max-w-lg">
+                Quattro tornei ufficiali in un solo giorno. Porta il tuo mazzo, sfida i migliori giocatori e vinci premi esclusivi. Iscrizione obbligatoria.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+            <!-- Pokémon -->
+            <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up">
+                <div class="h-32 bg-brand-card flex items-center justify-center relative border-b border-brand-border group-hover:border-brand-yellow overflow-hidden transition-colors">
+                    <span class="absolute text-[8rem] font-jp text-white/[0.02] group-hover:text-brand-yellow/[0.05] transition-colors">雷</span> <!-- Fulmine/Elettrico -->
+                    <h4 class="relative z-10 font-bold tracking-widest text-lg group-hover:text-brand-yellow transition-colors">POKÉMON TCG</h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Formato</span> <strong class="text-white">Standard</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Apertura</span> <strong class="text-white">Ore 10:00</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Posti</span> <strong class="text-white">Max 32</strong>
+                    </div>
+                    <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
+                        Iscriviti
+                    </a>
+                </div>
+            </div>
+
+            <!-- Yu-Gi-Oh! -->
+            <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up" style="transition-delay: 100ms;">
+                <div class="h-32 bg-brand-card flex items-center justify-center relative border-b border-brand-border group-hover:border-brand-yellow overflow-hidden transition-colors">
+                    <span class="absolute text-[8rem] font-jp text-white/[0.02] group-hover:text-brand-yellow/[0.05] transition-colors">闇</span> <!-- Oscurità -->
+                    <h4 class="relative z-10 font-bold tracking-widest text-lg group-hover:text-brand-yellow transition-colors">YU-GI-OH!</h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Formato</span> <strong class="text-white">Advanced</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Apertura</span> <strong class="text-white">Ore 11:00</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Posti</span> <strong class="text-white">Max 32</strong>
+                    </div>
+                    <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
+                        Iscriviti
+                    </a>
+                </div>
+            </div>
+
+            <!-- Magic -->
+            <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up" style="transition-delay: 200ms;">
+                <div class="h-32 bg-brand-card flex items-center justify-center relative border-b border-brand-border group-hover:border-brand-yellow overflow-hidden transition-colors">
+                    <span class="absolute text-[8rem] font-jp text-white/[0.02] group-hover:text-brand-yellow/[0.05] transition-colors">魔</span> <!-- Magia -->
+                    <h4 class="relative z-10 font-bold tracking-widest text-lg group-hover:text-brand-yellow transition-colors">MAGIC: TG</h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Formato</span> <strong class="text-white">Modern</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Apertura</span> <strong class="text-white">Ore 10:30</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Posti</span> <strong class="text-white">Max 24</strong>
+                    </div>
+                    <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
+                        Iscriviti
+                    </a>
+                </div>
+            </div>
+
+            <!-- One Piece -->
+            <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up" style="transition-delay: 300ms;">
+                <div class="h-32 bg-brand-card flex items-center justify-center relative border-b border-brand-border group-hover:border-brand-yellow overflow-hidden transition-colors">
+                    <span class="absolute text-[8rem] font-jp text-white/[0.02] group-hover:text-brand-yellow/[0.05] transition-colors">海</span> <!-- Mare/Pirata -->
+                    <h4 class="relative z-10 font-bold tracking-widest text-lg group-hover:text-brand-yellow transition-colors">ONE PIECE CG</h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Formato</span> <strong class="text-white">Standard</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Apertura</span> <strong class="text-white">Ore 12:00</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Posti</span> <strong class="text-white">Max 32</strong>
+                    </div>
+                    <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
+                        Iscriviti
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-12 p-6 border border-brand-yellow/30 bg-brand-yellow/5 text-xs text-brand-muted fade-in-up">
+            <strong class="text-brand-yellow mb-2 block uppercase tracking-widest">Regolamento Tornei</strong>
+            <p>Mazzi validati secondo il ban-list ufficiale vigente al 18 Luglio 2026. Ogni giocatore deve portare il proprio mazzo e i token. Formato Swiss, finale a eliminazione diretta. Giudici certificati presenti.</p>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         MODULO ISCRIZIONE (Clean Form)
+    ══════════════════════════════════════ -->
+    <section id="iscriviti" class="py-24 px-6 border-t border-brand-border bg-[#050505]">
+        <div class="max-w-3xl mx-auto fade-in-up">
+            <div class="flex items-center justify-between mb-12 border-b border-brand-border pb-6">
+                <h3 class="text-2xl md:text-3xl font-bold tracking-tight">連絡 — Registrazioni</h3>
+                <span class="text-xs font-bold tracking-widest text-brand-yellow uppercase">Form Ufficiale</span>
+            </div>
+
+            <form id="cosplayForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider" for="name">Nome o Nome d'Arte *</label>
+                        <input class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-accent focus:border-brand-yellow focus:outline-none transition-colors duration-200" type="text" id="name" required placeholder="Es. Luffy D. Monkey">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider" for="email">Indirizzo Email *</label>
+                        <input class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-accent focus:border-brand-yellow focus:outline-none transition-colors duration-200" type="email" id="email" required placeholder="Es. mail@esempio.it">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider" for="character">Personaggio / Gioco</label>
+                        <input class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-accent focus:border-brand-yellow focus:outline-none transition-colors duration-200" type="text" id="character" placeholder="Opzionale">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider" for="type">Categoria *</label>
+                        <select class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-muted focus:text-brand-yellow focus:border-brand-yellow focus:outline-none transition-colors duration-200 appearance-none rounded-none" id="type" required>
+                            <option value="" disabled selected>— Seleziona —</option>
+                            <optgroup label="Cosplay">
+                                <option value="cosplay_singolo">Singolo Cosplayer</option>
+                                <option value="cosplay_gruppo">Gruppo Cosplay</option>
+                            </optgroup>
+                            <optgroup label="Tornei TCG">
+                                <option value="tcg_pokemon">Pokémon TCG</option>
+                                <option value="tcg_yugioh">Yu-Gi-Oh!</option>
+                                <option value="tcg_magic">Magic: The Gathering</option>
+                                <option value="tcg_onepiece">One Piece Card Game</option>
+                            </optgroup>
+                            <optgroup label="Altro">
+                                <option value="visitatore">Richiesta Info Espositori</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-xs font-semibold text-brand-muted uppercase tracking-wider" for="message">Note Aggiuntive</label>
+                    <textarea class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-accent h-32 focus:border-brand-yellow focus:outline-none transition-colors duration-200 resize-none" id="message" placeholder="Richieste per cosplay, note sul mazzo..."></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-yellow text-black hover:bg-yellow-400 text-sm font-semibold tracking-widest uppercase px-8 py-4 transition-colors duration-300 mt-4">
+                    Invia Modulo
+                </button>
+            </form>
+
+            <div id="successMessage" class="hidden mt-8 border border-brand-yellow bg-brand-yellow/10 p-8 text-center transition-all">
+                <div class="w-12 h-12 bg-brand-yellow rounded-full flex items-center justify-center text-black mx-auto mb-4">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 class="font-bold text-lg text-brand-yellow mb-2">Registrazione Inviata.</h3>
+                <p class="text-brand-accent text-sm">Riceverai una conferma via email con il regolamento.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         LOCATION & MAPPA
+    ══════════════════════════════════════ -->
+    <section id="contatti" class="py-24 px-6 border-t border-brand-border">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center fade-in-up">
+            
+            <div class="space-y-8">
+                <div class="text-xs font-bold tracking-widest text-brand-yellow uppercase flex items-center gap-4">
+                    <span class="w-8 h-[1px] bg-brand-yellow"></span> 所在地 · Location
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight">
+                    Dove si tiene<br>l'evento.
+                </h2>
+                <p class="text-brand-muted text-lg font-light leading-relaxed">
+                    Canosa di Puglia è facilmente raggiungibile in auto tramite l'autostrada A14. Per chi viaggia in treno, sono attivi servizi navetta dalle stazioni limitrofe.
+                </p>
+
+                <div class="space-y-4 pt-4 text-sm">
+                    <div class="flex items-center gap-4 text-brand-muted hover:text-brand-yellow transition-colors cursor-pointer">
+                        <i class="fa-solid fa-envelope text-lg w-6"></i>
+                        <span>trajan.comic.cosplay@gmail.com</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-brand-muted hover:text-brand-yellow transition-colors cursor-pointer">
+                        <i class="fa-solid fa-phone text-lg w-6"></i>
+                        <span>+39 0883 1234567</span>
+                    </div>
+                    <div class="flex items-center gap-4 text-brand-muted hover:text-brand-yellow transition-colors cursor-pointer">
+                        <i class="fa-brands fa-instagram text-lg w-6"></i>
+                        <span>@_manbaga_</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mappa Google Embed -->
+            <div class="bg-brand-card border border-brand-border hover:border-brand-yellow transition-colors duration-300 p-2">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d200!2d16.0596407!3d41.2231917!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sit!2sit!4v1"
+                    width="100%"
+                    height="360"
+                    style="border:0; display:block;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Location Arcomix Games & Cosplay 2026">
+                </iframe>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SPONSOR (Minimal)
+    ══════════════════════════════════════ -->
+    <section class="py-16 border-t border-brand-border bg-[#050505] text-center px-6">
+        <div class="max-w-6xl mx-auto fade-in-up">
+            <h4 class="text-xs font-bold tracking-widest text-brand-yellow uppercase mb-8">Partner e Sponsor</h4>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 grayscale opacity-50 hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                <span class="text-sm font-bold tracking-widest uppercase text-brand-accent">ARCOMIX GAMES</span>
+                <span class="text-sm font-bold tracking-widest uppercase text-brand-muted">LOGO SPONSOR</span>
+                <span class="text-sm font-bold tracking-widest uppercase text-brand-muted">LOGO SPONSOR</span>
+                <span class="text-sm font-bold tracking-widest uppercase text-brand-muted">PATROCINIO COMUNE</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════ -->
+    <footer class="border-t border-brand-border bg-brand-bg pt-16 pb-8 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-brand-muted font-light">
+            <div class="flex items-center gap-2">
+                <span class="text-brand-yellow font-bold">ARCOMIX</span>
+                <span class="font-normal text-white">GAMES</span>
+                <span class="mx-2 opacity-30">|</span>
+                <span>© 2026 Canosa di Puglia. Tutti i diritti riservati.</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-brand-yellow transition-colors">Regolamento Cosplay</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ══════════════════════════════════════
+         SCRIPT
+    ══════════════════════════════════════ -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="src/js/formHandler.js"></script>
+    <script src="src/js/scrollObserver.js"></script>
+    <script src="src/js/navigation.js"></script>
+    <script>
+        initScrollAnimations();
+        initSmoothScrollLinks();
+    </script>
 </body>
 </html>
