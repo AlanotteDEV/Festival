@@ -128,7 +128,6 @@
 
         db.collection('registrations')
             .where('category', '==', 'tcg_onepiece')
-            .orderBy('timestamp', 'asc')
             .onSnapshot((snapshot) => {
                 const count = snapshot.size;
                 const countEl = document.getElementById('count');
@@ -146,15 +145,22 @@
                     badge.className = 'text-xs font-bold tracking-widest uppercase px-4 py-2 border border-brand-yellow text-brand-yellow';
                 }
 
-                if (snapshot.empty) {
+                const docs = [];
+                snapshot.forEach((doc) => docs.push(doc.data()));
+                docs.sort((a, b) => {
+                    const ta = a.timestamp ? a.timestamp.toMillis() : 0;
+                    const tb = b.timestamp ? b.timestamp.toMillis() : 0;
+                    return ta - tb;
+                });
+
+                if (docs.length === 0) {
                     lista.innerHTML = '<p class="text-brand-muted text-sm py-8 text-center">Nessun iscritto ancora. Sii il primo!</p>';
                     return;
                 }
 
                 lista.innerHTML = '';
                 let i = 1;
-                snapshot.forEach((doc) => {
-                    const d = doc.data();
+                docs.forEach((d) => {
                     const row = document.createElement('div');
                     row.className = 'flex items-center gap-4 p-4 bg-brand-card border border-brand-border';
                     row.innerHTML = `
