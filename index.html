@@ -8,11 +8,9 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Google: Inter (Design pulito) e Noto Sans JP (per i Kanji decorativi) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
-    
+    <!-- Font Inter e Noto Sans JP: self-hosted (nessuna richiesta a Google, nessun trasferimento IP a terzi) -->
+    <link href="src/css/fonts.css" rel="stylesheet">
+
     <!-- FontAwesome per le icone -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -398,6 +396,20 @@
                     <textarea class="w-full bg-brand-bg border border-brand-border p-4 text-sm text-brand-accent h-32 focus:border-brand-yellow focus:outline-none transition-colors duration-200 resize-none" id="message" placeholder="Richieste per cosplay, note sul mazzo..."></textarea>
                 </div>
 
+                <div class="space-y-3 pt-2 border-t border-brand-border">
+                    <p class="text-xs text-brand-muted leading-relaxed">
+                        Il tuo nome e il personaggio scelto verranno mostrati pubblicamente in tempo reale nella lista iscritti della gara/torneo a cui ti registri.
+                    </p>
+                    <label class="flex items-start gap-3 text-xs text-brand-muted cursor-pointer">
+                        <input type="checkbox" id="privacy-consent" required class="mt-0.5 accent-brand-yellow">
+                        <span>Ho letto l'<a href="privacy.html" target="_blank" class="underline hover:text-brand-yellow">Informativa Privacy</a> e acconsento al trattamento dei miei dati per la gestione dell'iscrizione all'evento. *</span>
+                    </label>
+                    <label class="flex items-start gap-3 text-xs text-brand-muted cursor-pointer">
+                        <input type="checkbox" id="age-consent" required class="mt-0.5 accent-brand-yellow">
+                        <span>Dichiaro di avere almeno 16 anni, oppure di aver ottenuto il consenso di un genitore/tutore alla mia iscrizione e al trattamento dei miei dati (necessario per i minorenni, art. 8 GDPR). *</span>
+                    </label>
+                </div>
+
                 <button type="submit" class="w-full bg-brand-yellow text-black hover:bg-yellow-400 text-sm font-semibold tracking-widest uppercase px-8 py-4 transition-colors duration-300 mt-4">
                     Invia Modulo
                 </button>
@@ -446,18 +458,15 @@
                 </div>
             </div>
 
-            <!-- Mappa Google Embed -->
+            <!-- Mappa Google Embed: caricata solo su richiesta dell'utente (nessuna richiesta/cookie di Google finché non si clicca) -->
             <div class="bg-brand-card border border-brand-border hover:border-brand-yellow transition-colors duration-300 p-2">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d200!2d16.0596407!3d41.2231917!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sit!2sit!4v1"
-                    width="100%"
-                    height="360"
-                    style="border:0; display:block;"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    title="Location Arcomix Games & Cosplay 2026">
-                </iframe>
+                <div id="map-placeholder" class="w-full h-[360px] flex flex-col items-center justify-center gap-4 text-center px-6 bg-brand-bg/60">
+                    <i class="fa-solid fa-map-location-dot text-3xl text-brand-yellow"></i>
+                    <p class="text-sm text-brand-muted">Cliccando su "Carica la mappa" verranno inviati dati a Google (inclusi indirizzo IP e cookie), come descritto nella <a href="cookie-policy.html" class="underline hover:text-brand-yellow">Cookie Policy</a>.</p>
+                    <button id="load-map-btn" type="button" class="bg-brand-yellow text-black text-xs font-bold uppercase tracking-widest px-6 py-3 hover:bg-yellow-400 transition-colors">
+                        Carica la mappa
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -490,7 +499,8 @@
                 <span>© 2026 Canosa di Puglia. Tutti i diritti riservati.</span>
             </div>
             <div class="flex items-center gap-6">
-                <a href="#" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+                <a href="privacy.html" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+                <a href="cookie-policy.html" class="hover:text-brand-yellow transition-colors">Cookie Policy</a>
                 <a href="#" class="hover:text-brand-yellow transition-colors">Regolamento Cosplay</a>
             </div>
         </div>
@@ -506,7 +516,26 @@
     <script src="src/js/formHandler.js"></script>
     <script src="src/js/scrollObserver.js"></script>
     <script src="src/js/navigation.js"></script>
+    <script src="src/js/cookieBanner.js"></script>
     <script>
+        function initMapFacade() {
+            const btn = document.getElementById('load-map-btn');
+            const placeholder = document.getElementById('map-placeholder');
+            if (!btn || !placeholder) return;
+            btn.addEventListener('click', () => {
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d200!2d16.0596407!3d41.2231917!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sit!2sit!4v1';
+                iframe.width = '100%';
+                iframe.height = '360';
+                iframe.style.border = '0';
+                iframe.style.display = 'block';
+                iframe.loading = 'lazy';
+                iframe.referrerPolicy = 'no-referrer-when-downgrade';
+                iframe.title = 'Location Arcomix Games & Cosplay 2026';
+                placeholder.replaceWith(iframe);
+            });
+        }
+
         function initMovingBackground() {
             const body = document.body;
             const maxShift = 150;
@@ -522,6 +551,8 @@
         initScrollAnimations();
         initSmoothScrollLinks();
         initMovingBackground();
+        initMapFacade();
+        initCookieBanner();
 
         db.collection('registrations')
             .where('category', '==', 'tcg_onepiece')

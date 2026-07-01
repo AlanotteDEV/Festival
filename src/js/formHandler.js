@@ -72,7 +72,11 @@ async function handleFormSubmit(event) {
 
   const validation = validateForm(form);
   if (!validation.valid) {
-    alert('Per favore compila correttamente i campi obbligatori: nome, email e categoria.');
+    if (validation.errors.includes('privacy_consent') || validation.errors.includes('age_consent')) {
+      alert('Per favore conferma di aver letto l\'Informativa Privacy e la dichiarazione sull\'età per procedere con l\'iscrizione.');
+    } else {
+      alert('Per favore compila correttamente i campi obbligatori: nome, email e categoria.');
+    }
     return false;
   }
 
@@ -123,11 +127,15 @@ function validateForm(formElement) {
   const name = formElement.querySelector('#name');
   const email = formElement.querySelector('#email');
   const category = formElement.querySelector('#type');
+  const privacyConsent = formElement.querySelector('#privacy-consent');
+  const ageConsent = formElement.querySelector('#age-consent');
 
   if (!name || !name.value.trim()) errors.push('name');
   if (!email || !email.value.trim()) errors.push('email');
   else if (!isValidEmail(email.value.trim())) errors.push('email_format');
   if (!category || !category.value) errors.push('category');
+  if (privacyConsent && !privacyConsent.checked) errors.push('privacy_consent');
+  if (ageConsent && !ageConsent.checked) errors.push('age_consent');
 
   return { valid: errors.length === 0, errors };
 }

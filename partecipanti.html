@@ -7,9 +7,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+    <link href="src/css/fonts.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -81,6 +79,21 @@
                 </div>
             </div>
             <p class="text-brand-muted text-sm mt-4">Lista aggiornata in tempo reale degli iscritti al torneo.</p>
+            <p class="text-brand-muted text-xs mt-2">Nome e personaggio/gioco scelto sono resi pubblici in questa pagina agli iscritti al torneo. Consulta la <a href="privacy.html" class="underline hover:text-brand-yellow">Privacy Policy</a> per i dettagli sul trattamento dei tuoi dati.</p>
+        </div>
+
+        <!-- Area Admin -->
+        <div class="mb-10 p-4 bg-brand-card/50 border border-brand-border">
+            <div id="admin-logged-out" class="flex flex-wrap items-center gap-2">
+                <input id="admin-email" type="email" placeholder="Email admin" class="bg-brand-bg border border-brand-border text-xs p-2 text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-yellow flex-1 min-w-[140px]">
+                <input id="admin-password" type="password" placeholder="Password" class="bg-brand-bg border border-brand-border text-xs p-2 text-white placeholder:text-brand-muted focus:outline-none focus:border-brand-yellow flex-1 min-w-[120px]">
+                <button id="admin-login-btn" class="text-xs font-bold uppercase tracking-widest border border-brand-border px-3 py-2 hover:border-brand-yellow hover:text-brand-yellow transition-colors">Accedi come Admin</button>
+            </div>
+            <div id="admin-logged-in" class="hidden items-center gap-3">
+                <span class="text-xs text-brand-muted">Admin: <span id="admin-email-label" class="text-brand-yellow"></span></span>
+                <button id="admin-logout-btn" class="text-xs font-bold uppercase tracking-widest border border-brand-border px-3 py-2 hover:border-red-400 hover:text-red-400 transition-colors">Esci</button>
+            </div>
+            <p id="admin-error" class="hidden text-xs text-red-400 mt-2"></p>
         </div>
 
         <!-- Contatore posti -->
@@ -109,13 +122,25 @@
 
     </main>
 
+    <footer class="border-t border-brand-border bg-brand-bg pt-8 pb-8 px-6 text-center">
+        <div class="flex items-center justify-center gap-6 text-xs text-brand-muted">
+            <a href="privacy.html" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+            <a href="cookie-policy.html" class="hover:text-brand-yellow transition-colors">Cookie Policy</a>
+        </div>
+    </footer>
+
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="src/js/firebase-config.js"></script>
+    <script src="src/js/cookieBanner.js"></script>
+    <script>initCookieBanner();</script>
 
     <script>
         const MAX = 16;
+        let isAdmin = false;
+        let lastDocs = [];
 
         function getCategoryLabel(cat) {
             const labels = {
@@ -126,13 +151,54 @@
             return labels[cat] || cat;
         }
 
+        function renderList() {
+            const lista = document.getElementById('lista-iscritti');
+            const docs = lastDocs;
+
+            if (docs.length === 0) {
+                lista.innerHTML = '<p class="text-brand-muted text-sm py-8 text-center">Nessun iscritto ancora. Sii il primo!</p>';
+                return;
+            }
+
+            lista.innerHTML = '';
+            let i = 1;
+            docs.forEach((d) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-4 p-4 bg-brand-card border border-brand-border';
+                row.innerHTML = `
+                    <span class="text-xs font-bold text-brand-muted w-6 text-center">${i}</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate">${escapeHtml(d.name)}</p>
+                        ${d.character ? `<p class="text-xs text-brand-muted truncate">${escapeHtml(d.character)}</p>` : ''}
+                    </div>
+                    <span class="text-xs text-brand-muted hidden sm:block">One Piece TCG</span>
+                    ${isAdmin ? `<button data-id="${d.id}" class="delete-btn text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-300 border border-red-400/40 hover:border-red-400 px-3 py-2 transition-colors"><i class="fa-solid fa-trash"></i></button>` : ''}
+                `;
+                lista.appendChild(row);
+                i++;
+            });
+
+            lista.querySelectorAll('.delete-btn').forEach((btn) => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('Rimuovere questo iscritto dal torneo?')) return;
+                    btn.disabled = true;
+                    try {
+                        await db.collection('registrations').doc(btn.dataset.id).delete();
+                    } catch (err) {
+                        console.error(err);
+                        alert('Errore durante la rimozione. Riprova.');
+                        btn.disabled = false;
+                    }
+                });
+            });
+        }
+
         db.collection('registrations')
             .where('category', '==', 'tcg_onepiece')
             .onSnapshot((snapshot) => {
                 const count = snapshot.size;
                 const countEl = document.getElementById('count');
                 const badge = document.getElementById('status-badge');
-                const lista = document.getElementById('lista-iscritti');
 
                 countEl.textContent = count;
 
@@ -146,34 +212,15 @@
                 }
 
                 const docs = [];
-                snapshot.forEach((doc) => docs.push(doc.data()));
+                snapshot.forEach((doc) => docs.push({ id: doc.id, ...doc.data() }));
                 docs.sort((a, b) => {
                     const ta = a.timestamp ? a.timestamp.toMillis() : 0;
                     const tb = b.timestamp ? b.timestamp.toMillis() : 0;
                     return ta - tb;
                 });
 
-                if (docs.length === 0) {
-                    lista.innerHTML = '<p class="text-brand-muted text-sm py-8 text-center">Nessun iscritto ancora. Sii il primo!</p>';
-                    return;
-                }
-
-                lista.innerHTML = '';
-                let i = 1;
-                docs.forEach((d) => {
-                    const row = document.createElement('div');
-                    row.className = 'flex items-center gap-4 p-4 bg-brand-card border border-brand-border';
-                    row.innerHTML = `
-                        <span class="text-xs font-bold text-brand-muted w-6 text-center">${i}</span>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-sm truncate">${escapeHtml(d.name)}</p>
-                            ${d.character ? `<p class="text-xs text-brand-muted truncate">${escapeHtml(d.character)}</p>` : ''}
-                        </div>
-                        <span class="text-xs text-brand-muted hidden sm:block">One Piece TCG</span>
-                    `;
-                    lista.appendChild(row);
-                    i++;
-                });
+                lastDocs = docs;
+                renderList();
             }, (error) => {
                 console.error(error);
                 document.getElementById('lista-iscritti').innerHTML =
@@ -186,6 +233,34 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
+        }
+
+        if (auth) {
+            auth.onAuthStateChanged((user) => {
+                isAdmin = !!user;
+                document.getElementById('admin-logged-out').classList.toggle('hidden', isAdmin);
+                document.getElementById('admin-logged-in').classList.toggle('hidden', !isAdmin);
+                document.getElementById('admin-logged-in').classList.toggle('flex', isAdmin);
+                if (isAdmin) document.getElementById('admin-email-label').textContent = user.email;
+                renderList();
+            });
+
+            document.getElementById('admin-login-btn').addEventListener('click', async () => {
+                const email = document.getElementById('admin-email').value.trim();
+                const password = document.getElementById('admin-password').value;
+                const errorEl = document.getElementById('admin-error');
+                errorEl.classList.add('hidden');
+                try {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    document.getElementById('admin-password').value = '';
+                } catch (err) {
+                    console.error(err);
+                    errorEl.textContent = 'Accesso non riuscito. Controlla email e password.';
+                    errorEl.classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('admin-logout-btn').addEventListener('click', () => auth.signOut());
         }
     </script>
 </body>
