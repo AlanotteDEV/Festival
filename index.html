@@ -358,14 +358,42 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 fade-in-up">
             <div>
                 <h2 class="text-xs font-bold tracking-widest text-brand-yellow uppercase mb-4">Competizioni</h2>
-                <h3 class="text-3xl md:text-4xl font-bold tracking-tight">TORNEI CARTE<br>COLLEZIONABILI</h3>
+                <h3 class="text-3xl md:text-4xl font-bold tracking-tight">LE NOSTRE<br>COMPETIZIONI</h3>
             </div>
             <p class="text-brand-muted text-sm md:text-base font-light max-w-lg">
-                Torneo ufficiale One Piece Card Game in un solo giorno. Porta il tuo mazzo, sfida i migliori giocatori e vinci premi esclusivi. Iscrizione obbligatoria.
+                Sali sul palco con la gara cosplay o siediti al tavolo per il torneo ufficiale One Piece Card Game. Iscrizione obbligatoria per entrambe.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+
+            <!-- Gara Cosplay -->
+            <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up" style="transition-delay: 200ms;">
+                <div class="h-32 bg-brand-card flex items-center justify-center relative border-b border-brand-border group-hover:border-brand-yellow overflow-hidden transition-colors">
+                    <span class="absolute text-[8rem] font-jp text-white/[0.02] group-hover:text-brand-yellow/[0.05] transition-colors">装</span> <!-- Costume -->
+                    <h4 class="relative z-10 font-bold tracking-widest text-lg group-hover:text-brand-yellow transition-colors">GARA COSPLAY</h4>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Categorie</span> <strong class="text-white">Singolo & Gruppo</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Palco</span> <strong class="text-white">Principale</strong>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
+                        <span>Iscritti</span>
+                        <strong class="text-white">
+                            <span id="cosplay-count">—</span>
+                        </strong>
+                    </div>
+                    <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
+                        Iscriviti
+                    </a>
+                    <a href="cosplay-iscritti.html" class="block text-center border border-brand-border/50 text-brand-muted hover:text-brand-yellow hover:border-brand-yellow text-xs font-bold uppercase tracking-widest py-3 transition-colors">
+                        <i class="fa-solid fa-list mr-2"></i>Vedi Iscritti
+                    </a>
+                </div>
+            </div>
 
             <!-- One Piece -->
             <div class="group bg-brand-bg border border-brand-border hover:border-brand-yellow transition-colors duration-300 rounded-lg overflow-hidden fade-in-up" style="transition-delay: 300ms;">
@@ -397,9 +425,15 @@
 
         </div>
 
-        <div class="mt-12 p-6 border border-brand-yellow/30 bg-brand-yellow/5 text-xs text-brand-muted fade-in-up">
-            <strong class="text-brand-yellow mb-2 block uppercase tracking-widest">Regolamento Tornei</strong>
-            <p>Mazzi validati secondo il ban-list ufficiale vigente al 17 Luglio 2026. Ogni giocatore deve portare il proprio mazzo e i token. Formato Swiss, finale a eliminazione diretta. Giudici certificati presenti.</p>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-6 border border-brand-yellow/30 bg-brand-yellow/5 text-xs text-brand-muted fade-in-up">
+                <strong class="text-brand-yellow mb-2 block uppercase tracking-widest">Regolamento Gara Cosplay</strong>
+                <p>Sfilata sul palco principale con valutazione da parte di una giuria di professionisti su costumi, sartorialità e interpretazione. Categorie Singolo e Gruppo.</p>
+            </div>
+            <div class="p-6 border border-brand-yellow/30 bg-brand-yellow/5 text-xs text-brand-muted fade-in-up">
+                <strong class="text-brand-yellow mb-2 block uppercase tracking-widest">Regolamento Torneo TCG</strong>
+                <p>Mazzi validati secondo il ban-list ufficiale vigente al 17 Luglio 2026. Ogni giocatore deve portare il proprio mazzo e i token. Formato Swiss, finale a eliminazione diretta. Giudici certificati presenti.</p>
+            </div>
         </div>
     </section>
 
@@ -663,6 +697,13 @@
             .where('category', '==', 'tcg_onepiece')
             .onSnapshot((snapshot) => {
                 const el = document.getElementById('onepiece-count');
+                if (el) el.textContent = snapshot.size;
+            });
+
+        db.collection('registrations')
+            .where('category', 'in', ['cosplay_singolo', 'cosplay_gruppo'])
+            .onSnapshot((snapshot) => {
+                const el = document.getElementById('cosplay-count');
                 if (el) el.textContent = snapshot.size;
             });
     </script>
