@@ -1,11 +1,10 @@
-// Vai su console.firebase.google.com → Il tuo progetto → Impostazioni → Configurazione web
 const firebaseConfig = {
-  apiKey: "INSERISCI_API_KEY",
-  authDomain: "INSERISCI_AUTH_DOMAIN",
-  projectId: "INSERISCI_PROJECT_ID",
-  storageBucket: "INSERISCI_STORAGE_BUCKET",
-  messagingSenderId: "INSERISCI_MESSAGING_SENDER_ID",
-  appId: "INSERISCI_APP_ID",
+  apiKey: "AIzaSyCcEr967KBilLmusc66xT6JVBG9Qrj4yZY",
+  authDomain: "arcomix-8db18.firebaseapp.com",
+  projectId: "arcomix-8db18",
+  storageBucket: "arcomix-8db18.firebasestorage.app",
+  messagingSenderId: "1067090080221",
+  appId: "1:1067090080221:web:9af76f421a5be106048634"
 };
 
 firebase.initializeApp(firebaseConfig);
