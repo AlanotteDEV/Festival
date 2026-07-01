@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iscritti Torneo One Piece — Arcomix Games & Cosplay 2026</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        jp: ['Noto Sans JP', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            bg: '#3d2d5a',
+                            card: '#4a3a6e',
+                            border: '#6b5b8f',
+                            muted: '#c4b0d9',
+                            accent: '#ffffff',
+                            yellow: '#FFD600',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            overflow-x: hidden;
+            background-color: #3d2d5a;
+            background-image:
+                linear-gradient(135deg, rgba(74,123,167,0.75) 0%, rgba(138,92,168,0.65) 25%, rgba(216,114,110,0.55) 50%, rgba(245,169,98,0.45) 75%, rgba(255,179,102,0.35) 100%),
+                url('background.png');
+            background-size: 130% auto;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+            min-height: 100vh;
+        }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-accent font-sans antialiased">
+
+    <nav class="fixed top-0 left-0 w-full glass-nav bg-white/30 border-b border-white/20 z-50 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-xl font-bold tracking-widest uppercase flex items-center gap-2 text-white hover:text-white/80 transition-colors">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+                <span>ARCOMIX</span>
+                <span class="text-white font-normal">GAMES</span>
+            </a>
+            <a href="index.html#iscriviti" class="bg-brand-yellow text-black text-xs font-bold tracking-widest uppercase px-5 py-2 hover:bg-yellow-400 transition-colors">
+                Iscriviti
+            </a>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 max-w-3xl mx-auto">
+
+        <!-- Header -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl font-jp text-white/20">海</span>
+                <div>
+                    <p class="text-xs font-bold tracking-widest text-brand-yellow uppercase mb-1">Torneo TCG</p>
+                    <h1 class="text-3xl md:text-4xl font-bold tracking-tight">One Piece Card Game</h1>
+                </div>
+            </div>
+            <p class="text-brand-muted text-sm mt-4">Lista aggiornata in tempo reale degli iscritti al torneo.</p>
+        </div>
+
+        <!-- Contatore posti -->
+        <div class="mb-10 p-6 bg-brand-card border border-brand-border flex items-center justify-between">
+            <div>
+                <p class="text-xs font-bold tracking-widest text-brand-muted uppercase mb-1">Posti occupati</p>
+                <p class="text-4xl font-bold">
+                    <span id="count">—</span>
+                    <span class="text-brand-muted font-light text-2xl"> / 16</span>
+                </p>
+            </div>
+            <div id="status-badge" class="text-xs font-bold tracking-widest uppercase px-4 py-2 border hidden"></div>
+        </div>
+
+        <!-- Lista iscritti -->
+        <div>
+            <div class="flex items-center justify-between mb-6 border-b border-brand-border pb-4">
+                <h2 class="text-xs font-bold tracking-widest text-brand-muted uppercase">Lista Iscritti</h2>
+                <span class="text-xs text-brand-muted">Aggiornata in tempo reale</span>
+            </div>
+
+            <div id="lista-iscritti" class="space-y-3">
+                <p class="text-brand-muted text-sm py-8 text-center">Caricamento...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="src/js/firebase-config.js"></script>
+
+    <script>
+        const MAX = 16;
+
+        function getCategoryLabel(cat) {
+            const labels = {
+                tcg_onepiece: 'One Piece Card Game',
+                cosplay_singolo: 'Cosplay Singolo',
+                cosplay_gruppo: 'Cosplay Gruppo',
+            };
+            return labels[cat] || cat;
+        }
+
+        db.collection('registrations')
+            .where('category', '==', 'tcg_onepiece')
+            .orderBy('timestamp', 'asc')
+            .onSnapshot((snapshot) => {
+                const count = snapshot.size;
+                const countEl = document.getElementById('count');
+                const badge = document.getElementById('status-badge');
+                const lista = document.getElementById('lista-iscritti');
+
+                countEl.textContent = count;
+
+                badge.classList.remove('hidden');
+                if (count >= MAX) {
+                    badge.textContent = 'Posti Esauriti';
+                    badge.className = 'text-xs font-bold tracking-widest uppercase px-4 py-2 border border-red-400 text-red-400';
+                } else {
+                    badge.textContent = (MAX - count) + ' posti liberi';
+                    badge.className = 'text-xs font-bold tracking-widest uppercase px-4 py-2 border border-brand-yellow text-brand-yellow';
+                }
+
+                if (snapshot.empty) {
+                    lista.innerHTML = '<p class="text-brand-muted text-sm py-8 text-center">Nessun iscritto ancora. Sii il primo!</p>';
+                    return;
+                }
+
+                lista.innerHTML = '';
+                let i = 1;
+                snapshot.forEach((doc) => {
+                    const d = doc.data();
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center gap-4 p-4 bg-brand-card border border-brand-border';
+                    row.innerHTML = `
+                        <span class="text-xs font-bold text-brand-muted w-6 text-center">${i}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-sm truncate">${escapeHtml(d.name)}</p>
+                            ${d.character ? `<p class="text-xs text-brand-muted truncate">${escapeHtml(d.character)}</p>` : ''}
+                        </div>
+                        <span class="text-xs text-brand-muted hidden sm:block">One Piece TCG</span>
+                    `;
+                    lista.appendChild(row);
+                    i++;
+                });
+            }, (error) => {
+                console.error(error);
+                document.getElementById('lista-iscritti').innerHTML =
+                    '<p class="text-red-400 text-sm py-8 text-center">Errore nel caricamento. Controlla la configurazione Firebase.</p>';
+            });
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

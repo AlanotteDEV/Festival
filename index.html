@@ -326,10 +326,16 @@
                         <span>Apertura</span> <strong class="text-white">Ore 12:00</strong>
                     </div>
                     <div class="flex justify-between items-center text-xs text-brand-muted border-b border-brand-border/50 pb-2">
-                        <span>Posti</span> <strong class="text-white">Max 32</strong>
+                        <span>Posti</span>
+                        <strong class="text-white">
+                            <span id="onepiece-count">—</span> / 16
+                        </strong>
                     </div>
                     <a href="#iscriviti" class="block text-center border border-brand-border group-hover:bg-brand-yellow group-hover:border-brand-yellow group-hover:text-black text-xs font-bold uppercase tracking-widest py-3 mt-6 transition-colors">
                         Iscriviti
+                    </a>
+                    <a href="partecipanti.html" class="block text-center border border-brand-border/50 text-brand-muted hover:text-brand-yellow hover:border-brand-yellow text-xs font-bold uppercase tracking-widest py-3 transition-colors">
+                        <i class="fa-solid fa-list mr-2"></i>Vedi Iscritti
                     </a>
                 </div>
             </div>
@@ -490,6 +496,9 @@
     <!-- ══════════════════════════════════════
          SCRIPT
     ══════════════════════════════════════ -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="src/js/firebase-config.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <script src="src/js/formHandler.js"></script>
     <script src="src/js/scrollObserver.js"></script>
@@ -510,6 +519,13 @@
         initScrollAnimations();
         initSmoothScrollLinks();
         initMovingBackground();
+
+        db.collection('registrations')
+            .where('category', '==', 'tcg_onepiece')
+            .onSnapshot((snapshot) => {
+                const el = document.getElementById('onepiece-count');
+                if (el) el.textContent = snapshot.size;
+            });
     </script>
 </body>
 </html>
