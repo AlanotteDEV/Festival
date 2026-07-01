@@ -78,13 +78,14 @@ function handleFormSubmit(event) {
   initEmailJS();
 
   const templateParams = {
-    user_name: formData.name,
-    user_email: formData.email,
+    from_name: formData.name,
+    from_email: formData.email,
+    reply_to: formData.email,
     user_character: formData.character || 'N/A',
     user_category: formData.category,
-    user_message: formData.message || 'Nessuna',
-    recipient_email: emailJsConfig.recipientEmail,
-    email_subject: 'Registrazione Arcomix Games & Cosplay',
+    message: formData.message || 'Nessuna',
+    to_email: emailJsConfig.recipientEmail,
+    subject: 'Registrazione Arcomix Games & Cosplay',
     html_message: buildEmailHtml(formData),
   };
 
