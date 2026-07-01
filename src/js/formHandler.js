@@ -17,27 +17,19 @@ function initEmailJS() {
   }
 }
 
-function buildEmailHtml(formData) {
-  return `
-    <div style="font-family:Arial,sans-serif;color:#111;background:#f8f7f2;padding:24px;border-radius:16px;">
-      <div style="background:#2f2258;padding:18px 24px;border-radius:12px 12px 0 0;color:#fff;">
-        <h1 style="margin:0;font-size:22px;letter-spacing:0.08em;">Registrazione Arcomix Games & Cosplay</h1>
-      </div>
-      <div style="padding:24px;">
-        <p style="margin:0 0 18px;color:#444;font-size:16px;line-height:1.6;">Hai ricevuto una nuova registrazione dal modulo del sito.</p>
-        <table style="width:100%;border-collapse:collapse;">
-          <tr><td style="padding:10px 0;font-weight:700;color:#2f2258;width:180px;">Nome / Nome d'Arte:</td><td style="padding:10px 0;color:#333;">${formData.name}</td></tr>
-          <tr><td style="padding:10px 0;font-weight:700;color:#2f2258;">Email:</td><td style="padding:10px 0;color:#333;">${formData.email}</td></tr>
-          <tr><td style="padding:10px 0;font-weight:700;color:#2f2258;">Personaggio / Gioco:</td><td style="padding:10px 0;color:#333;">${formData.character || 'N/A'}</td></tr>
-          <tr><td style="padding:10px 0;font-weight:700;color:#2f2258;">Categoria:</td><td style="padding:10px 0;color:#333;">${formData.category}</td></tr>
-          <tr><td style="padding:10px 0;font-weight:700;color:#2f2258;">Note aggiuntive:</td><td style="padding:10px 0;color:#333;">${formData.message || 'Nessuna'}</td></tr>
-        </table>
-        <div style="margin-top:24px;padding:16px;background:#f1eefa;border-radius:12px;color:#5e4e8b;font-size:14px;">
-          Questa email è stata generata da Arcomix Games & Cosplay — Festival 2026.
-        </div>
-      </div>
-    </div>
-  `;
+function buildEmailText(formData) {
+  return [
+    'Nuova registrazione dal modulo del sito.',
+    '',
+    'Nome / Nome d\'Arte: ' + formData.name,
+    'Email: ' + formData.email,
+    'Personaggio / Gioco: ' + (formData.character || 'N/A'),
+    'Categoria: ' + formData.category,
+    'Note aggiuntive: ' + (formData.message || 'Nessuna'),
+    '',
+    '---',
+    'Arcomix Games & Cosplay — Festival 2026',
+  ].join('\n');
 }
 
 function handleFormSubmit(event) {
@@ -83,7 +75,7 @@ function handleFormSubmit(event) {
     reply_to: formData.email,
     to_email: emailJsConfig.recipientEmail,
     subject: 'Registrazione Arcomix Games & Cosplay',
-    message: buildEmailHtml(formData),
+    message: buildEmailText(formData),
   };
 
   emailjs.send(emailJsConfig.serviceId, emailJsConfig.templateId, templateParams)
