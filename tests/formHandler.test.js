@@ -42,10 +42,18 @@ describe('formHandler', () => {
       window.db = {
         collection: jest.fn(() => ({
           add: jest.fn().mockResolvedValue({ id: 'mock-id' }),
+          doc: jest.fn(() => ({ id: 'mock-doc-id' })),
           where: jest.fn(() => ({
             get: jest.fn().mockResolvedValue({ size: 0 }),
           })),
         })),
+        runTransaction: jest.fn(async (updateFn) =>
+          updateFn({
+            get: jest.fn().mockResolvedValue({ exists: true, data: () => ({ count: 0 }) }),
+            update: jest.fn(),
+            set: jest.fn(),
+          })
+        ),
       };
     });
 
@@ -102,6 +110,95 @@ describe('formHandler', () => {
       document.body.innerHTML = '<form id="cosplayForm"></form>';
       const event = { preventDefault: jest.fn() };
       await expect(handleFormSubmit(event)).resolves.toBe(false);
+    });
+  });
+
+  // ── handleFormSubmit (torneo One Piece, contatore transazionale) ───
+
+  describe('handleFormSubmit — tcg_onepiece slot cap', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <form id="cosplayForm" onsubmit="handleFormSubmit(event)">
+          <input id="name" value="Mario" />
+          <input id="email" value="mario@example.com" />
+          <input id="character" value="" />
+          <select id="type"><option value="tcg_onepiece" selected>One Piece Card Game</option></select>
+          <textarea id="message"></textarea>
+          <button type="submit">Invia</button>
+        </form>
+        <div id="successMessage" class="hidden"></div>
+      `;
+      Element.prototype.scrollIntoView = jest.fn();
+      window.alert = jest.fn();
+
+      window.emailjs = { init: jest.fn(), send: jest.fn().mockResolvedValue({}) };
+      window.emailjsInitDone = false;
+      window.firebase = {
+        firestore: { FieldValue: { serverTimestamp: jest.fn(() => 'MOCK_TIMESTAMP') } },
+      };
+    });
+
+    afterEach(() => {
+      delete window.emailjs;
+      delete window.emailjsInitDone;
+      delete window.firebase;
+      delete window.db;
+      delete window.alert;
+    });
+
+    test('creates the registration and increments the counter when under the cap', async () => {
+      const transactionUpdate = jest.fn();
+      const transactionSet = jest.fn();
+      window.db = {
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({ id: 'mock-doc-id' })),
+          where: jest.fn(() => ({ get: jest.fn().mockResolvedValue({ size: 5 }) })),
+        })),
+        runTransaction: jest.fn(async (updateFn) =>
+          updateFn({
+            get: jest.fn().mockResolvedValue({ exists: true, data: () => ({ count: 5 }) }),
+            update: transactionUpdate,
+            set: transactionSet,
+          })
+        ),
+      };
+
+      const event = { preventDefault: jest.fn() };
+      await handleFormSubmit(event);
+
+      expect(transactionUpdate).toHaveBeenCalledWith(expect.anything(), { count: 6 });
+      expect(transactionSet).toHaveBeenCalledTimes(1);
+      expect(window.alert).not.toHaveBeenCalled();
+      const successMsg = document.getElementById('successMessage');
+      expect(successMsg.classList.contains('hidden')).toBe(false);
+    });
+
+    test('shows a sold-out alert when the transaction finds the cap already reached (race condition on the last slot)', async () => {
+      // Il controllo preliminare lato client vede ancora 15/16 (non blocca
+      // l'invio), ma nel frattempo un'altra registrazione ha già occupato
+      // l'ultimo posto: solo la transazione atomica se ne accorge davvero.
+      window.db = {
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({ id: 'mock-doc-id' })),
+          where: jest.fn(() => ({ get: jest.fn().mockResolvedValue({ size: 15 }) })),
+        })),
+        runTransaction: jest.fn(async (updateFn) =>
+          updateFn({
+            get: jest.fn().mockResolvedValue({ exists: true, data: () => ({ count: 16 }) }),
+            update: jest.fn(),
+            set: jest.fn(),
+          })
+        ),
+      };
+
+      const event = { preventDefault: jest.fn() };
+      await handleFormSubmit(event);
+
+      expect(window.alert).toHaveBeenCalledWith(
+        'Siamo spiacenti, i posti per il torneo One Piece Card Game sono esauriti (16/16).'
+      );
+      const form = document.getElementById('cosplayForm');
+      expect(form.style.display).not.toBe('none');
     });
   });
 

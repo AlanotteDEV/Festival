@@ -37,11 +37,33 @@ async function getOnePieceCount() {
 }
 
 async function saveRegistration(formData) {
-  await db.collection('registrations').add({
+  const registrationData = {
     name: formData.name,
     character: formData.character || '',
     category: formData.category,
     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  if (formData.category !== 'tcg_onepiece') {
+    await db.collection('registrations').add(registrationData);
+    return;
+  }
+
+  // Il tetto di ONE_PIECE_MAX posti è imposto anche dalle Firestore
+  // Security Rules tramite meta/tcg_onepiece_count: se qualcuno prova a
+  // registrarsi oltre il limite (anche bypassando il sito), la transazione
+  // viene rifiutata dal database, non solo dal controllo lato client.
+  const counterRef = db.collection('meta').doc('tcg_onepiece_count');
+  const registrationRef = db.collection('registrations').doc();
+
+  await db.runTransaction(async (transaction) => {
+    const counterSnap = await transaction.get(counterRef);
+    const current = counterSnap.exists ? counterSnap.data().count : 0;
+    if (current >= ONE_PIECE_MAX) {
+      throw new Error('SOLD_OUT');
+    }
+    transaction.update(counterRef, { count: current + 1 });
+    transaction.set(registrationRef, registrationData);
   });
 }
 
@@ -116,7 +138,11 @@ async function handleFormSubmit(event) {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Invia Modulo';
     }
-    alert('C\'è stato un problema nell\'invio. Controlla le impostazioni e riprova.');
+    if (error && error.message === 'SOLD_OUT') {
+      alert('Siamo spiacenti, i posti per il torneo One Piece Card Game sono esauriti (16/16).');
+    } else {
+      alert('C\'è stato un problema nell\'invio. Controlla le impostazioni e riprova.');
+    }
   }
 
   return true;
