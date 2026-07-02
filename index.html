@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net https://*.iubenda.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.iubenda.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https://*.iubenda.com; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com https://*.iubenda.com; frame-src https://www.google.com https://*.iubenda.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <script type="text/javascript" src="https://embeds.iubenda.com/widgets/00b291fc-baed-4e87-878a-51f961bfbd4f.js"></script>
     <title>Arcomix Games & Cosplay 2026 - Canosa di Puglia</title>
     
     <!-- Tailwind CSS -->
@@ -561,16 +562,15 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                 </div>
             </div>
 
-            <!-- Mappa Google Embed: caricata solo su richiesta dell'utente (nessuna richiesta/cookie di Google finché non si clicca) -->
+            <!-- Mappa Google Embed: bloccata da Iubenda Cookie Solution finché l'utente non presta consenso -->
             <div class="bg-brand-card border border-brand-border hover:border-brand-yellow transition-colors duration-300 p-2">
-                <div id="map-placeholder" class="w-full h-[360px] flex flex-col items-center justify-center gap-4 text-center px-6 bg-brand-bg/60">
-                    <i class="fa-solid fa-map-location-dot text-3xl text-brand-yellow"></i>
-                    <p class="text-sm text-brand-muted">Cliccando su "Carica la mappa" verranno inviati dati a Google (inclusi indirizzo IP e cookie), come descritto nella <a href="https://www.iubenda.com/privacy-policy/98185773/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed underline hover:text-brand-yellow" title="Cookie Policy" target="_blank">Cookie Policy</a>.</p>
-                    <button id="load-map-btn" type="button" class="bg-brand-yellow text-black text-xs font-bold uppercase tracking-widest px-6 py-3 hover:bg-yellow-400 transition-colors">
-                        Carica la mappa
-                    </button>
-                    <p id="map-consent-hint" class="hidden text-xs text-brand-muted">Attiva i cookie di Google Maps nel banner per visualizzare la mappa.</p>
-                </div>
+                <iframe
+                    class="_iub_cs_activate w-full h-[360px] block border-0"
+                    src="about:blank"
+                    suppressedsrc="https://www.google.com/maps?q=Salita+Calvario%2C+Canosa+di+Puglia%2C+Italia&output=embed"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Location Arcomix Games & Cosplay 2026"></iframe>
             </div>
 
         </div>
@@ -652,7 +652,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
             <div class="flex items-center gap-6">
                 <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Privacy Policy" target="_blank">Privacy Policy</a>
                 <a href="https://www.iubenda.com/privacy-policy/98185773/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Cookie Policy" target="_blank">Cookie Policy</a>
-                <button type="button" onclick="window.CookieConsent && window.CookieConsent.openPreferences()" class="hover:text-brand-yellow transition-colors">Preferenze Cookie</button>
+                <a href="#" class="iubenda-cs-preferences-link hover:text-brand-yellow transition-colors">Preferenze Cookie</a>
             </div>
         </div>
     </footer>
@@ -667,41 +667,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
     <script src="src/js/formHandler.js"></script>
     <script src="src/js/scrollObserver.js"></script>
     <script src="src/js/navigation.js"></script>
-    <script src="src/js/cookieBanner.js"></script>
     <script>
-        function initMapFacade() {
-            const btn = document.getElementById('load-map-btn');
-            const placeholder = document.getElementById('map-placeholder');
-            const hint = document.getElementById('map-consent-hint');
-            if (!btn || !placeholder) return;
-
-            function loadMap() {
-                const iframe = document.createElement('iframe');
-                iframe.src = 'https://www.google.com/maps?q=' + encodeURIComponent('Salita Calvario, Canosa di Puglia, Italia') + '&output=embed';
-                iframe.width = '100%';
-                iframe.height = '360';
-                iframe.style.border = '0';
-                iframe.style.display = 'block';
-                iframe.loading = 'lazy';
-                iframe.referrerPolicy = 'no-referrer-when-downgrade';
-                iframe.title = 'Location Arcomix Games & Cosplay 2026';
-                placeholder.replaceWith(iframe);
-            }
-
-            btn.addEventListener('click', () => {
-                if (window.CookieConsent && window.CookieConsent.isAllowed('maps')) {
-                    loadMap();
-                } else if (hint) {
-                    hint.classList.remove('hidden');
-                    if (window.CookieConsent) window.CookieConsent.openPreferences();
-                }
-            });
-
-            document.addEventListener('cookieconsentchange', (e) => {
-                if (e.detail && e.detail.maps && placeholder.isConnected) loadMap();
-            });
-        }
-
         function initMovingBackground() {
             const body = document.body;
             const maxShift = 150;
@@ -717,8 +683,6 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
         initScrollAnimations();
         initSmoothScrollLinks();
         initMovingBackground();
-        initMapFacade();
-        initCookieBanner();
 
         db.collection('registrations')
             .where('category', '==', 'tcg_onepiece')

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net https://*.iubenda.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://*.iubenda.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https://*.iubenda.com; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com https://*.iubenda.com; frame-src https://www.google.com https://*.iubenda.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <script type="text/javascript" src="https://embeds.iubenda.com/widgets/00b291fc-baed-4e87-878a-51f961bfbd4f.js"></script>
     <title>Iscritti Gara Cosplay — Arcomix Games & Cosplay 2026</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -131,7 +132,7 @@
         <div class="flex items-center justify-center gap-6 text-xs text-brand-muted">
             <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Privacy Policy" target="_blank">Privacy Policy</a>
             <a href="https://www.iubenda.com/privacy-policy/98185773/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Cookie Policy" target="_blank">Cookie Policy</a>
-            <button type="button" onclick="window.CookieConsent && window.CookieConsent.openPreferences()" class="hover:text-brand-yellow transition-colors">Preferenze Cookie</button>
+            <a href="#" class="iubenda-cs-preferences-link hover:text-brand-yellow transition-colors">Preferenze Cookie</a>
         </div>
     </footer>
 
@@ -139,8 +140,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="src/js/firebase-config.js"></script>
-    <script src="src/js/cookieBanner.js"></script>
-    <script>initCookieBanner();</script>
 
     <script>
         let isAdmin = false;
