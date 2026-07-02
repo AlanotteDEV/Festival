@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net https://cdn.iubenda.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
     <title>Arcomix Games & Cosplay 2026 - Canosa di Puglia</title>
     
     <!-- Tailwind CSS -->
@@ -501,7 +501,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                     </p>
                     <label class="flex items-start gap-3 text-xs text-brand-muted cursor-pointer">
                         <input type="checkbox" id="privacy-consent" required class="mt-0.5 accent-brand-yellow">
-                        <span>Ho letto l'<a href="privacy.html" target="_blank" class="underline hover:text-brand-yellow">Informativa Privacy</a> e acconsento al trattamento dei miei dati per la gestione dell'iscrizione all'evento. *</span>
+                        <span>Ho letto l'<a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed underline hover:text-brand-yellow" title="Privacy Policy" target="_blank">Informativa Privacy</a> e acconsento al trattamento dei miei dati per la gestione dell'iscrizione all'evento. *</span>
                     </label>
                     <label class="flex items-start gap-3 text-xs text-brand-muted cursor-pointer">
                         <input type="checkbox" id="age-consent" required class="mt-0.5 accent-brand-yellow">
@@ -649,7 +649,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                 <span>© 2026 Canosa di Puglia. Tutti i diritti riservati.</span>
             </div>
             <div class="flex items-center gap-6">
-                <a href="privacy.html" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+                <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Privacy Policy" target="_blank">Privacy Policy</a>
                 <a href="cookie-policy.html" class="hover:text-brand-yellow transition-colors">Cookie Policy</a>
             </div>
         </div>
@@ -717,5 +717,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                 if (el) el.textContent = snapshot.size;
             });
     </script>
+
+    <script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src="https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
 </body>
 </html>

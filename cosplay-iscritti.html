@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://www.gstatic.com https://cdn.jsdelivr.net https://cdn.iubenda.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://firestore.googleapis.com https://*.firebaseio.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://api.emailjs.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self';">
     <title>Iscritti Gara Cosplay — Arcomix Games & Cosplay 2026</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <p class="text-brand-muted text-sm mt-4">Lista aggiornata in tempo reale degli iscritti alla gara cosplay.</p>
-            <p class="text-brand-muted text-xs mt-2">Nome e personaggio scelto sono resi pubblici in questa pagina agli iscritti alla gara. Consulta la <a href="privacy.html" class="underline hover:text-brand-yellow">Privacy Policy</a> per i dettagli sul trattamento dei tuoi dati.</p>
+            <p class="text-brand-muted text-xs mt-2">Nome e personaggio scelto sono resi pubblici in questa pagina agli iscritti alla gara. Consulta la <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed underline hover:text-brand-yellow" title="Privacy Policy" target="_blank">Privacy Policy</a> per i dettagli sul trattamento dei tuoi dati.</p>
         </div>
 
         <!-- Area Admin -->
@@ -129,7 +129,7 @@
 
     <footer class="border-t border-brand-border bg-brand-bg pt-8 pb-8 px-6 text-center">
         <div class="flex items-center justify-center gap-6 text-xs text-brand-muted">
-            <a href="privacy.html" class="hover:text-brand-yellow transition-colors">Privacy Policy</a>
+            <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Privacy Policy" target="_blank">Privacy Policy</a>
             <a href="cookie-policy.html" class="hover:text-brand-yellow transition-colors">Cookie Policy</a>
         </div>
     </footer>
@@ -255,5 +255,7 @@
             document.getElementById('admin-logout-btn').addEventListener('click', () => auth.signOut());
         }
     </script>
+
+    <script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src="https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
 </body>
 </html>
