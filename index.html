@@ -569,6 +569,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                     <button id="load-map-btn" type="button" class="bg-brand-yellow text-black text-xs font-bold uppercase tracking-widest px-6 py-3 hover:bg-yellow-400 transition-colors">
                         Carica la mappa
                     </button>
+                    <p id="map-consent-hint" class="hidden text-xs text-brand-muted">Attiva i cookie di Google Maps nel banner per visualizzare la mappa.</p>
                 </div>
             </div>
 
@@ -651,6 +652,7 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
             <div class="flex items-center gap-6">
                 <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Privacy Policy" target="_blank">Privacy Policy</a>
                 <a href="https://www.iubenda.com/privacy-policy/98185773/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed hover:text-brand-yellow transition-colors" title="Cookie Policy" target="_blank">Cookie Policy</a>
+                <button type="button" onclick="window.CookieConsent && window.CookieConsent.openPreferences()" class="hover:text-brand-yellow transition-colors">Preferenze Cookie</button>
             </div>
         </div>
     </footer>
@@ -670,8 +672,10 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
         function initMapFacade() {
             const btn = document.getElementById('load-map-btn');
             const placeholder = document.getElementById('map-placeholder');
+            const hint = document.getElementById('map-consent-hint');
             if (!btn || !placeholder) return;
-            btn.addEventListener('click', () => {
+
+            function loadMap() {
                 const iframe = document.createElement('iframe');
                 iframe.src = 'https://www.google.com/maps?q=' + encodeURIComponent('Salita Calvario, Canosa di Puglia, Italia') + '&output=embed';
                 iframe.width = '100%';
@@ -682,6 +686,19 @@ Indossa il tuo costume per la gara cosplay o siediti al tavolo per il torneo uff
                 iframe.referrerPolicy = 'no-referrer-when-downgrade';
                 iframe.title = 'Location Arcomix Games & Cosplay 2026';
                 placeholder.replaceWith(iframe);
+            }
+
+            btn.addEventListener('click', () => {
+                if (window.CookieConsent && window.CookieConsent.isAllowed('maps')) {
+                    loadMap();
+                } else if (hint) {
+                    hint.classList.remove('hidden');
+                    if (window.CookieConsent) window.CookieConsent.openPreferences();
+                }
+            });
+
+            document.addEventListener('cookieconsentchange', (e) => {
+                if (e.detail && e.detail.maps && placeholder.isConnected) loadMap();
             });
         }
 
