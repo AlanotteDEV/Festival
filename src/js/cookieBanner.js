@@ -32,8 +32,8 @@ function initCookieBanner() {
       <p class="flex-1 text-brand-muted">
         Questo sito utilizza servizi di terze parti (Firebase, EmailJS) necessari al funzionamento del modulo di iscrizione
         e, solo su tua richiesta, Google Maps. Consulta la
-        <a href="privacy.html" class="underline hover:text-brand-yellow">Privacy Policy</a> e la
-        <a href="cookie-policy.html" class="underline hover:text-brand-yellow">Cookie Policy</a> per i dettagli.
+        <a href="https://www.iubenda.com/privacy-policy/98185773" class="iubenda-white iubenda-noiframe iubenda-embed underline hover:text-brand-yellow" title="Privacy Policy" target="_blank">Privacy Policy</a> e la
+        <a href="https://www.iubenda.com/privacy-policy/98185773/cookie-policy" class="iubenda-white iubenda-noiframe iubenda-embed underline hover:text-brand-yellow" title="Cookie Policy" target="_blank">Cookie Policy</a> per i dettagli.
       </p>
       <button id="cookie-banner-ok" type="button" class="bg-brand-yellow text-black text-xs font-bold uppercase tracking-widest px-6 py-3 hover:bg-yellow-400 transition-colors whitespace-nowrap">
         Ho capito
